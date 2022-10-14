@@ -14,6 +14,20 @@ defmodule GeneratorWeb.SiteLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
+  def handle_event("build", %{"id" => site_id}, socket) do
+    Sites.build_site(site_id)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("delete_build", %{"id" => site_id}, socket) do
+    Sites.delete_site_build(site_id)
+
+    {:noreply, socket}
+  end
+
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Site")

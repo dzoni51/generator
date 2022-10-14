@@ -4,6 +4,7 @@ defmodule Generator.Repo.Migrations.CreateSites do
   def change do
     create table(:sites) do
       add :name, :string
+      add :module, :string
       add :css, :text
     end
   end
