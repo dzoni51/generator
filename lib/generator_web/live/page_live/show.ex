@@ -6,7 +6,8 @@ defmodule GeneratorWeb.PageLive.Show do
 
   @impl true
   def mount(%{"site_id" => site_id}, _session, socket) do
-    {:ok, assign(socket, :site, Sites.get_site!(site_id)), layout: {GeneratorWeb.LayoutView, "preview.html"}}
+    {:ok, assign(socket, :site, Sites.get_site!(site_id)),
+     layout: {GeneratorWeb.LayoutView, "preview.html"}}
   end
 
   @impl true

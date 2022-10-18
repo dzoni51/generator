@@ -36,7 +36,9 @@ defmodule Generator.ComponentsTest do
       component = component_fixture()
       update_attrs = %{code: "some updated code", name: "some updated name"}
 
-      assert {:ok, %Component{} = component} = Components.update_component(component, update_attrs)
+      assert {:ok, %Component{} = component} =
+               Components.update_component(component, update_attrs)
+
       assert component.code == "some updated code"
       assert component.name == "some updated name"
     end

@@ -1,6 +1,8 @@
 defmodule GeneratorWeb.Router do
   use GeneratorWeb, :router
 
+  import GeneratorWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,23 +10,15 @@ defmodule GeneratorWeb.Router do
     plug :put_root_layout, {GeneratorWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", GeneratorWeb do
+  scope "/admin", GeneratorWeb do
     pipe_through :browser
-
-    get "/", PageController, :index
-
-    live "/components", ComponentLive.Index, :index
-    live "/components/new", ComponentLive.Index, :new
-    live "/components/:id/edit", ComponentLive.Index, :edit
-
-    live "/components/:id", ComponentLive.Show, :show
-    live "/components/:id/show/edit", ComponentLive.Show, :edit
 
     live "/sites", SiteLive.Index, :index
     live "/sites/new", SiteLive.Index, :new
@@ -35,6 +29,45 @@ defmodule GeneratorWeb.Router do
     live "/sites/:site_id/pages/:id/edit", PageLive.Index, :edit
     live "/sites/:site_id/pages/:id/show/edit", PageLive.Show, :edit
     live "/sites/:site_id/pages/:id/show", PageLive.Show, :show
+  end
+
+  scope "/", GeneratorWeb do
+    pipe_through :browser
+
+    get "/", PageController, :index
+  end
+
+  ## Authentication routes
+
+  scope "/", GeneratorWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", GeneratorWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", GeneratorWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 
   # Other scopes may use custom stacks.
