@@ -1,7 +1,6 @@
-<.live_component module={GeneratorWeb.Sidebar} id={"sidebar"} screen={"sites"} />
-
+<%= render GeneratorWeb.LayoutView, "_user_menu.html", assigns %>
 <main class="flex flex-1 flex-col md:pl-64">
-   <%= if live_flash(@flash, :info) do %>
+  <%= if get_flash(@conn, :info) do %>
     <div class="rounded-md bg-green-50 p-4" phx-click="lv:clear-flash" phx-value-key="info">
         <div class="flex">
           <div class="flex-shrink-0">
@@ -12,25 +11,14 @@
         </div>
         <div class="ml-3">
           <p role="alert" class="text-sm font-medium text-green-800">
-            <%= live_flash(@flash, :info) %>
+            <%= get_flash(@conn, :info) %>
           </p>
-        </div>
-        <div class="ml-auto pl-3">
-          <div class="-mx-1.5 -my-1.5">
-            <button type="button" class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50">
-              <span class="sr-only">Dismiss</span>
-              <!-- Heroicon name: mini/x-mark -->
-              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-              </svg>
-            </button>
-          </div>
         </div>
         </div>
     </div>
-   <% end %>
+  <% end %>
 
-   <%= if live_flash(@flash, :error) do %>
+  <%= if get_flash(@conn, :error) do %>
     <div class="rounded-md bg-red-50 p-4" phx-click="lv:clear-flash" phx-value-key="error">
       <div class="flex">
         <div class="flex-shrink-0">
@@ -40,13 +28,10 @@
           </svg>
         </div>
         <div class="ml-3">
-          <p class="text-sm font-medium text-red-800"><%= live_flash(@flash, :error) %></p>
+          <p class="text-sm font-medium text-red-800"><%= get_flash(@conn, :error) %></p>
         </div>
       </div>
     </div>
-   <% end %>
-
+  <% end %>
   <%= @inner_content %>
 </main>
-
-<%= render GeneratorWeb.LayoutView, "_footer.html" %>

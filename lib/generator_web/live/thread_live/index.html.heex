@@ -1,0 +1,89 @@
+<div class="flex mt-4 mb-4 ml-2">
+    <div>
+        <.form
+            let={f}
+            for={:search}
+            id="message-search"
+            phx-change="search_change"
+            phx-submit="search_submit">
+            <%= text_input f, :term, list: "options", value: @term, autocomplete: "off", placeholder: "Search", class: "block w-full rounded-full border-gray-300 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+        </.form>
+    </div>
+    <div class="flex items-center">
+    <div class="ml-3 text-sm">
+        <label for="new" class="font-medium text-gray-700">New</label>
+        <input type="checkbox" phx-click="filter" phx-value-filter="new" checked={@new} id="new" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+    </div>
+    <div class="ml-3 text-sm">
+        <label for="archived" class="font-medium text-gray-700">Archived</label>
+        <input type="checkbox" phx-click="filter" phx-value-filter="archived" checked={@archived} id="archived" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+    </div>    
+    <div class="ml-3 text-sm">
+        <label for="all" class="font-medium text-gray-700">All</label>
+        <input type="checkbox" phx-click="filter" phx-value-filter="all" checked={@all} id="all" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+    </div>
+
+    </div>
+</div>
+
+<div class="flex h-screen">
+   <%= unless Enum.empty?(@threads) do %>
+    <div class="flex-1 text-center px-14 overflow-y-visible text-gray-700">
+        <ul role="list" class="divide-y divide-gray-200">
+          <%= for thread <- @threads do %>
+          <li class={add_class_to_list_element(thread)}>
+            <%= link thread.name, to: "#", phx_click: "show-messages", phx_value_thread_id: thread.id %>
+          </li>
+          <% end %>
+        </ul>
+    </div>
+    <% end %>
+<div class="flex-1 overflow-y-visible px-14 border-l-2 border-gray-200">
+    <%= unless is_nil(@thread) do %>
+        <h3 class="text-gray-600 underline text-lg text-center"><%= @thread.name %></h3>
+
+        <div class="flex flex-row-reverse">
+            <%= if @thread.archived do %>
+                <%= link "Unarchive this thread", to: "#", phx_click: "unarchive", class: "inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-3 py-2 text-sm font-medium leading-4 text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+            <% else %>
+                <%= link "Archive this thread", to: "#", phx_click: "archive", class: "inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-3 py-2 text-sm font-medium leading-4 text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+            <% end %>
+        </div>
+        
+            <ul role="list" class="divide-y divide-gray-200">
+              <%= for message <- @thread.messages do %>
+              <li class="py-4">
+                <div class="text-blue-600"><%= message.sent_by %>:</div>
+                <div class="ml-8 text-gray-700"><%= message.body %></div>
+              </li>
+              <% end %>
+            </ul>
+
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center" aria-hidden="true">
+        <div class="w-full border-t border-gray-300"></div>
+      </div>
+      <div class="relative flex justify-center">
+        <span class="bg-white px-2 text-sm text-gray-500">End of chat</span>
+      </div>
+    </div>
+
+        <.form
+            let={f}
+            for={:message}
+            id="message-form"
+            phx-submit="save">
+            <div class="flex justify-end">
+                <div class="mt-1">
+                    <%= textarea f, :body, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                </div>
+            </div>
+            <div class="pt-5">
+                <div class="flex justify-end">
+                    <%= submit "Send message", class: "ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+                </div>
+            </div>
+        </.form>
+    <% end %>
+    </div>
+</div>

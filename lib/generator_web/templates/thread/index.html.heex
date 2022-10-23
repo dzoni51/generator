@@ -1,0 +1,25 @@
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl w-screen">
+        <ul role="list" class="divide-y divide-gray-200">
+          <%= for thread <- @threads do %>
+          <li class="py-4">
+            <div><%= link thread.name, to: Routes.message_path(@conn, :index, thread) %></div>
+          </li>
+          <% end %>
+        </ul>
+        
+        <.form let={f} for={:thread} action={Routes.thread_path(@conn, :create)} id="create_thread">
+            <div>
+                <div class="mt-1">
+                    <%= text_input f, :name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+                </div>
+            </div>
+
+            <div class="pt-5">
+                <div class="flex justify-end">
+                    <%= submit "Create thread", class: "ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+                </div>
+            </div>
+        </.form>
+    </div>
+</div>

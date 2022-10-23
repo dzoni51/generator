@@ -13,6 +13,10 @@ defmodule GeneratorWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :signed_in_layout do
+    plug :put_layout, {GeneratorWeb.LayoutView, :signed_in}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -29,18 +33,21 @@ defmodule GeneratorWeb.Router do
     live "/sites/:site_id/pages/:id/edit", PageLive.Index, :edit
     live "/sites/:site_id/pages/:id/show/edit", PageLive.Show, :edit
     live "/sites/:site_id/pages/:id/show", PageLive.Show, :show
-  end
 
-  scope "/", GeneratorWeb do
-    pipe_through :browser
+    live "/admins", AdminLive.Index, :index
+    live "/admins/new", AdminLive.Index, :new
+    live "/admins/:id/edit", AdminLive.Index, :edit
 
-    get "/", PageController, :index
+    live "/threads", ThreadLive.Index, :index
+    live "/threads/messages", MessageLive.Show, :show
   end
 
   ## Authentication routes
 
   scope "/", GeneratorWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/", PageController, :index
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
@@ -53,11 +60,19 @@ defmodule GeneratorWeb.Router do
   end
 
   scope "/", GeneratorWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :signed_in_layout]
+
+    get "/users/dashboard", DashboardController, :index
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    get "/threads/:id/messages", MessageController, :index
+    post "/threads/:id/messages/create", MessageController, :create
+
+    get "/threads", ThreadController, :index
+    post "/threads/create", ThreadController, :create
   end
 
   scope "/", GeneratorWeb do
