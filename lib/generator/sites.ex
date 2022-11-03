@@ -158,6 +158,7 @@ defmodule Generator.Sites do
     end
   end
 
+  # ! This does not exist in PROD ENV
   defp priv_path do
     :code.priv_dir(:generator)
   end
