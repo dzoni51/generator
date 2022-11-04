@@ -10,12 +10,21 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :generator, GeneratorWeb.Endpoint,
+  url: [host: "svezapare.com"],
   cache_static_manifest: "priv/static/cache_manifest.json"
+  #https: [
+   # port: 443,
+   # cipher_suite: :strong,
+   # otp_app: :generator,
+   # keyfile: System.get_env("ssl_key.pem"),
+   # certfile: System.get_env("ssl_certfile.pem")
+  #],
+  #force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # Do not print debug messages in production
 config :logger, level: :info
 
-# ## SSL Support
+  # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
 # to the previous section and set your `:url` port to 443:
