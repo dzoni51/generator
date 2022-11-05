@@ -71,11 +71,11 @@ defmodule Generator.Sites do
       File.write(mixfile_path(app_path), build_mix_file(site))
 
       # * Write configs
-      #write_configs(site)
+      # write_configs(site)
     end
   end
 
-  #TODO:
+  # TODO:
   # defp write_configs(site) do
   #   write_config(site)
   #   write_dev(site)
@@ -93,7 +93,111 @@ defmodule Generator.Sites do
     File.write(root_layout_path(app_path, site.module), default_root_layout_html(site.name))
     # * Remove default page index template
     File.rm(default_page_index_path(app_path, site.module))
+    # * Remove code reloader from endpoint.ex
+    clean_endpoint(app_path, site)
   end
+
+  defp clean_endpoint(app_path, %Site{module: module}) do
+    path = endpoint_path(app_path, module)
+
+    with true <- File.exists?(path) do
+      camelized_module_name = Phoenix.Naming.camelize(module)
+
+      new_endpoint_content = """
+      defmodule #{camelized_module_name}Web.Endpoint do
+        use Phoenix.Endpoint, otp_app: :#{module}
+
+        # The session will be stored in the cookie and signed,
+        # this means its contents can be read but not tampered with.
+        # Set :encryption_salt if you would also like to encrypt it.
+        @session_options [
+          store: :cookie,
+          key: "_#{module}_key",
+          signing_salt: "#{generate_random_salt()}"
+        ]
+
+
+        # Serve at "/" the static files from "priv/static" directory.
+        #
+        # You should set gzip to true if you are running phx.digest
+        # when deploying your static files in production.
+        plug Plug.Static,
+          at: "/",
+          from: :#{module},
+          gzip: false,
+          only: ~w(assets fonts images)
+
+        plug Plug.RequestId
+        plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
+
+        plug Plug.Parsers,
+          parsers: [:urlencoded, :multipart, :json],
+          pass: ["*/*"],
+          json_decoder: Phoenix.json_library()
+
+        plug Plug.MethodOverride
+        plug Plug.Head
+        plug Plug.Session, @session_options
+        plug #{camelized_module_name}Web.Router
+      end
+      """
+
+      File.write(path, new_endpoint_content)
+    else
+      _ ->
+        {:error, :file_not_found}
+    end
+  end
+
+  @alphabet_lower_case [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z"
+  ]
+  defp generate_random_salt() do
+    alphabet_upper_case =
+      Enum.into(@alphabet_lower_case, [], fn letter -> String.upcase(letter) end)
+
+    numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    Enum.reduce(1..8, "", fn _, acc ->
+      case Enum.random([1, 2, 3]) do
+        1 ->
+          acc <> Enum.random(@alphabet_lower_case)
+
+        2 ->
+          acc <> Enum.random(alphabet_upper_case)
+
+        3 ->
+          acc <> Enum.random(numbers)
+      end
+    end)
+  end
+
+  defp endpoint_path(app_path, module), do: Path.join(app_path, "lib/#{module}_web/endpoint.ex")
 
   defp default_page_index_path(app_path, module),
     do: Path.join(app_path, "lib/#{module}_web/templates/page/index.html.heex")
@@ -253,7 +357,7 @@ defmodule Generator.Sites do
       defp elixirc_paths(_), do: ["lib"]
 
       defp deps do
-        #{default_deps()}
+        #{write_deps(default_deps())}
       end
 
       defp aliases do
@@ -267,5 +371,17 @@ defmodule Generator.Sites do
       end
     end
     """
+  end
+
+  defp write_deps(deps) do
+    Enum.reduce(deps, "[\n", fn dep, acc ->
+      acc <> trim(dep) <> "," <> "\n"
+    end) <> "]"
+  end
+
+  defp trim(to_trim) do
+    to_trim
+    |> String.replace("\n", "")
+    |> String.trim()
   end
 end
