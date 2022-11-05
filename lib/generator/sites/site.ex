@@ -30,14 +30,15 @@ defmodule Generator.Sites.Site do
     field :css, :string
     field :module, :string
     field :domain, :string
+    field :region, :string
 
     has_many :pages, Generator.Pages.Page
   end
 
   def changeset(site, attrs) do
     site
-    |> cast(attrs, [:name, :css, :domain])
-    |> validate_required([:name, :domain])
+    |> cast(attrs, [:name, :css, :domain, :region])
+    |> validate_required([:name, :domain, :region])
     |> maybe_update_module()
   end
 

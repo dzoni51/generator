@@ -22,6 +22,13 @@ defmodule GeneratorWeb.SiteLive.Index do
   end
 
   @impl true
+  def handle_event("deploy", %{"id" => site_id}, socket) do
+    Sites.deploy(site_id)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("delete_build", %{"id" => site_id}, socket) do
     Sites.delete_site_build(site_id)
 

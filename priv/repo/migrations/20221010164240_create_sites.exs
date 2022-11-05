@@ -7,6 +7,7 @@ defmodule Generator.Repo.Migrations.CreateSites do
       add :module, :string
       add :css, :text
       add :domain, :string
+      add :region, :string
     end
   end
 end

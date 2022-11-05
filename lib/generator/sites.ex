@@ -384,4 +384,24 @@ defmodule Generator.Sites do
     |> String.replace("\n", "")
     |> String.trim()
   end
+
+  def deploy(site_id) do
+    with %Site{} = site <- get_site!(site_id) do
+      app_path = Path.join(priv_path(), site.module)
+
+      System.cmd(
+        "fly",
+        [
+          ~s(launch),
+          ~s(--dockerignore-from-gitignore),
+          ~s(--name "#{site.name}"),
+          ~s(--region "#{site.region}"),
+          ~s(--org "personal"),
+          ~s(--now),
+          ~s(--copy-config)
+        ],
+        cd: app_path
+      )
+    end
+  end
 end
