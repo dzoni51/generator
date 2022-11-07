@@ -73,6 +73,9 @@ defmodule GeneratorWeb.Router do
 
     get "/threads", ThreadController, :index
     post "/threads/create", ThreadController, :create
+
+    get "/test/billing", BillingController, :index
+    post "/checkout", BillingController, :checkout
   end
 
   scope "/", GeneratorWeb do
