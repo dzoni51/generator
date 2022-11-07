@@ -71,15 +71,88 @@ defmodule Generator.Sites do
       File.write(mixfile_path(app_path), build_mix_file(site))
 
       # * Write configs
-      # write_configs(site)
+      write_configs(app_path, site)
     end
   end
 
-  # TODO:
-  # defp write_configs(site) do
-  #   write_config(site)
-  #   write_dev(site)
-  # end
+  defp write_configs(app_path, site) do
+    write_config_file(app_path, site)
+    write_prod_file(app_path, site)
+  end
+
+  defp write_prod_file(app_path, %Site{module: module, domain: domain}) do
+    camelized_module_name = Phoenix.Naming.camelize(module)
+
+    config_content = """
+    import Config
+
+
+    config :#{module}, #{camelized_module_name}Web.Endpoint,
+     cache_static_manifest: "priv/static/cache_manifest.json",
+     url: [host: "#{domain}"]
+
+    config :logger, level: :info
+    """
+
+    File.write(prod_path(app_path), config_content)
+  end
+
+  defp write_config_file(app_path, %Site{module: module}) do
+    camelized_module_name = Phoenix.Naming.camelize(module)
+
+    config_content = """
+    import Config
+
+    # Configures the endpoint
+    config :#{module}, #{camelized_module_name}Web.Endpoint,
+    url: [host: "localhost"],
+    render_errors: [view: #{camelized_module_name}Web.ErrorView, accepts: ~w(html json), layout: false],
+    pubsub_server: #{camelized_module_name}.PubSub,
+    live_view: [signing_salt: "#{generate_random_salt()}"]
+
+    # Configure esbuild (the version is required)
+    config :esbuild,
+    version: "0.14.29",
+    default: [
+      args:
+        ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+      cd: Path.expand("../assets", __DIR__),
+      env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+    ]
+
+    # Configures Elixir's Logger
+    config :logger, :console,
+    format: "$time $metadata[$level] $message\n",
+    metadata: [:request_id]
+
+    # Use Jason for JSON parsing in Phoenix
+    config :phoenix, :json_library, Jason
+
+    # * Tailwind config
+    config :tailwind,
+    version: "3.1.8",
+    default: [
+      args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+      cd: Path.expand("../assets", __DIR__)
+    ]
+
+    # Import environment specific config. This must remain at the bottom
+    # of this file so it overrides the configuration defined above.
+    import_config "\#{config_env()}.exs"
+    """
+
+    File.write(config_path(app_path), config_content)
+  end
+
+  defp config_path(app_path), do: Path.join(app_path, "config/config.exs")
+
+  defp prod_path(app_path), do: Path.join(app_path, "config/prod.exs")
+
+  # defp runtime_path(app_path), do: Path.join(app_path, "config/runtime.exs")
 
   defp mixfile_path(app_path), do: Path.join(app_path, "mix.exs")
 
@@ -192,7 +265,7 @@ defmodule Generator.Sites do
           acc <> Enum.random(alphabet_upper_case)
 
         3 ->
-          acc <> Enum.random(numbers)
+          acc <> to_string(Enum.random(numbers))
       end
     end)
   end
