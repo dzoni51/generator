@@ -1,11 +1,20 @@
 <script src="https://js.braintreegateway.com/web/dropin/1.33.4/js/dropin.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.88.2/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.88.2/js/data-collector.min.js"></script>
 
 
 <div class="w-1/4">
-    <%= form_for @conn, Routes.billing_path(@conn, :checkout), [id: "payment-form"], fn _f -> %>
+    <%= form_for @conn, Routes.billing_path(@conn, :checkout), [id: "payment-form", autocomplete: "off"], fn f -> %>
         <div id="dropin-container"></div>
+
+        <div>
+          <%= label f, :save_card %>
+          <%= checkbox f, :save_card %>
+        </div>
+        
         <%= submit "Submit", class: "inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
         <input type="hidden" id="nonce" name="payment_method_nonce"/>
+        <input type="hidden" id="data" name="device_data"/>
     <% end %>
 </div>
 
@@ -14,28 +23,39 @@
 
 
 <script type="text/javascript">
-const form = document.getElementById('payment-form');
+  braintree.client.create({
+    authorization: "<%= @token %>"
+  }, function (err, clientInstance) {
 
-braintree.dropin.create({
-  authorization: "<%= @token %>",
-  container: '#dropin-container'
-}, (error, dropinInstance) => {
-  if (error) console.error(error);
+    const form = document.getElementById('payment-form');
 
-  form.addEventListener('submit', event => {
-    event.preventDefault();
+  braintree.dropin.create({
+    authorization: "<%= @token %>",
+    container: '#dropin-container'
+  }, (error, dropinInstance) => {
+    if (error) console.error(error);
 
-    dropinInstance.requestPaymentMethod((error, payload) => {
-      if (error) console.error(error);
+    form.addEventListener('submit', event => {
+      event.preventDefault();
 
-      // Step four: when the user is ready to complete their
-      //   transaction, use the dropinInstance to get a payment
-      //   method nonce for the user's selected payment method, then add
-      //   it a the hidden field before submitting the complete form to
-      //   a server-side integration
-      document.getElementById('nonce').value = payload.nonce;
-      form.submit();
+      dropinInstance.requestPaymentMethod((error, payload) => {
+        if (error) console.error(error);
+
+        document.getElementById('nonce').value = payload.nonce;
+        form.submit();
+      });
     });
   });
-});
+
+    braintree.dataCollector.create({
+      client: clientInstance
+    }, function (err, dataCollectorInstance) {
+      if (err) {
+        // Handle error in creation of data collector
+        return;
+      }
+      var deviceData = dataCollectorInstance.deviceData;
+      document.getElementById('data').value = deviceData
+    });
+  });
 </script>

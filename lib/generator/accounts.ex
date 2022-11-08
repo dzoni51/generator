@@ -350,4 +350,10 @@ defmodule Generator.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def update_user_braintree_id(user, braintree_id) do
+    user
+    |> User.braintree_changeset(braintree_id)
+    |> Repo.update()
+  end
 end

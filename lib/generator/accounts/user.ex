@@ -7,6 +7,7 @@ defmodule Generator.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :braintree_id, :string
 
     has_many :threads, Generator.Threads.Thread
     timestamps()
@@ -137,5 +138,10 @@ defmodule Generator.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def braintree_changeset(user, braintree_id) do
+    user
+    |> change(braintree_id: braintree_id)
   end
 end
