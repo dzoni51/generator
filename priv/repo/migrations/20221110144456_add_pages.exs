@@ -1,4 +1,4 @@
-defmodule Generator.Repo.Migrations.CreatePages do
+defmodule Generator.Repo.Migrations.AddPages do
   use Ecto.Migration
 
   def change do

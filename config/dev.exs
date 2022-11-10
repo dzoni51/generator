@@ -79,5 +79,5 @@ config :braintree,
   environment: :sandbox,
   master_merchant_id: {:system, "BRAINTREE_MASTER_MERCHANT_ID"},
   merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
-  public_key:  {:system, "BRAINTREE_PUBLIC_KEY"},
+  public_key: {:system, "BRAINTREE_PUBLIC_KEY"},
   private_key: {:system, "BRAINTREE_PRIVATE_KEY"}

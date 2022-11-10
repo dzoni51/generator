@@ -33,12 +33,13 @@ defmodule Generator.Sites.Site do
     field :region, :string
 
     has_many :pages, Generator.Pages.Page
+    belongs_to :user, Generator.Accounts.User
   end
 
   def changeset(site, attrs) do
     site
-    |> cast(attrs, [:name, :css, :domain, :region])
-    |> validate_required([:name, :domain, :region])
+    |> cast(attrs, [:name, :css, :domain, :region, :user_id])
+    |> validate_required([:name, :domain, :region, :user_id])
     |> maybe_update_module()
   end
 

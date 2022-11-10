@@ -24,15 +24,21 @@ defmodule GeneratorWeb.Router do
   scope "/admin", GeneratorWeb do
     pipe_through :browser
 
-    live "/sites", SiteLive.Index, :index
-    live "/sites/new", SiteLive.Index, :new
-    live "/sites/:id/edit", SiteLive.Index, :edit
+    live "/users", UserLive.Index, :index
 
-    live "/sites/:site_id/pages", PageLive.Index, :index
-    live "/sites/:site_id/pages/new", PageLive.Index, :new
-    live "/sites/:site_id/pages/:id/edit", PageLive.Index, :edit
-    live "/sites/:site_id/pages/:id/show/edit", PageLive.Show, :edit
-    live "/sites/:site_id/pages/:id/show", PageLive.Show, :show
+    live "/users/:user_id/sites", SiteLive.Index, :index
+    live "/users/:user_id/sites/new", SiteLive.Index, :new
+    live "/users/:user_id/sites/:id/edit", SiteLive.Index, :edit
+
+    live "/users/:user_id/sites/:site_id/pages", PageLive.Index, :index
+    live "/users/:user_id/sites/:site_id/pages/new", PageLive.Index, :new
+    live "/users/:user_id/sites/:site_id/pages/:id/edit", PageLive.Index, :edit
+    live "/users/:user_id/sites/:site_id/pages/:id/show/edit", PageLive.Show, :edit
+    live "/users/:user_id/sites/:site_id/pages/:id/show", PageLive.Show, :show
+
+    live "/users/:user_id/plan", UserPlanLive.Index, :index
+    live "/plans", PlanLive.Index, :index
+    live "/plans/:id/edit", PlanLive.Index, :edit
 
     live "/admins", AdminLive.Index, :index
     live "/admins/new", AdminLive.Index, :new
@@ -57,6 +63,8 @@ defmodule GeneratorWeb.Router do
     post "/users/reset_password", UserResetPasswordController, :create
     get "/users/reset_password/:token", UserResetPasswordController, :edit
     put "/users/reset_password/:token", UserResetPasswordController, :update
+
+    get "/plans", PlanController, :index
   end
 
   scope "/", GeneratorWeb do
@@ -77,6 +85,8 @@ defmodule GeneratorWeb.Router do
     get "/billing", BillingController, :index
     get "/billing/add-card", BillingController, :new
     post "/billing/add-card", BillingController, :create
+    delete "/billing/delete-card/:id", BillingController, :delete
+    post "/billing/make-default/:id", BillingController, :make_default
   end
 
   scope "/", GeneratorWeb do

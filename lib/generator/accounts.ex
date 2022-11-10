@@ -60,6 +60,11 @@ defmodule Generator.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user!(id, preload_opts) do
+    Repo.get!(User, id)
+    |> Repo.preload(preload_opts)
+  end
+
   ## User registration
 
   @doc """
@@ -355,5 +360,37 @@ defmodule Generator.Accounts do
     user
     |> User.braintree_changeset(braintree_id)
     |> Repo.update()
+  end
+
+  def apply_plan(user, plan_id, subscription_id) do
+    user
+    |> User.apply_plan(%{"plan_id" => plan_id, "subscription_id" => subscription_id})
+    |> Repo.update()
+  end
+
+  def remove_plan(user) do
+    user
+    |> User.remove_plan()
+    |> Repo.update()
+  end
+
+  def user_currently_on_plan?(%User{plan_id: nil}), do: false
+  def user_currently_on_plan?(_), do: true
+
+  def get_user_plan_name(user) do
+    with true <- user_currently_on_plan?(user) do
+      user
+      |> Ecto.assoc(:plan)
+      |> select([p], p.name)
+      |> Repo.one()
+    else
+      false ->
+        nil
+    end
+  end
+
+  def list_users() do
+    Repo.all(User)
+    |> Repo.preload(:plan)
   end
 end

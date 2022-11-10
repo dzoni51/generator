@@ -12,6 +12,13 @@ defmodule Generator.Sites do
     Repo.all(Site)
   end
 
+  def list_user_sites(user_id) do
+    user_id
+    |> Generator.Accounts.get_user!()
+    |> Ecto.assoc(:sites)
+    |> Repo.all()
+  end
+
   def get_site!(id), do: Repo.get!(Site, id) |> Repo.preload(:pages)
 
   def create_site(attrs) do

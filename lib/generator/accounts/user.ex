@@ -8,8 +8,12 @@ defmodule Generator.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :braintree_id, :string
+    field :subscription_id, :string
 
     has_many :threads, Generator.Threads.Thread
+    has_many :sites, Generator.Sites.Site
+    has_many :cards, Generator.Cards.Card
+    belongs_to :plan, Generator.Plans.Plan
     timestamps()
   end
 
@@ -143,5 +147,14 @@ defmodule Generator.Accounts.User do
   def braintree_changeset(user, braintree_id) do
     user
     |> change(braintree_id: braintree_id)
+  end
+
+  def apply_plan(user, attrs) do
+    user
+    |> cast(attrs, [:plan_id, :subscription_id])
+  end
+
+  def remove_plan(user) do
+    change(user, %{plan_id: nil, subscription_id: nil})
   end
 end

@@ -1,4 +1,4 @@
-defmodule Generator.Repo.Migrations.CreateUsersAuthTables do
+defmodule Generator.Repo.Migrations.AddUsersAuthTables do
   use Ecto.Migration
 
   def change do
@@ -9,6 +9,8 @@ defmodule Generator.Repo.Migrations.CreateUsersAuthTables do
       add :hashed_password, :string, null: false
       add :braintree_id, :string
       add :confirmed_at, :naive_datetime
+      add :plan_id, references(:plans)
+      add :subscription_id, :string
       timestamps()
     end
 

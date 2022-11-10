@@ -1,4 +1,4 @@
-defmodule Generator.Repo.Migrations.CreateSites do
+defmodule Generator.Repo.Migrations.AddSites do
   use Ecto.Migration
 
   def change do
@@ -8,6 +8,7 @@ defmodule Generator.Repo.Migrations.CreateSites do
       add :css, :text
       add :domain, :string
       add :region, :string
+      add :user_id, references(:users)
     end
   end
 end

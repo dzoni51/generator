@@ -3,10 +3,14 @@ defmodule GeneratorWeb.SiteLive.Index do
 
   alias Generator.Sites
   alias Generator.Sites.Site
+  alias Generator.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :sites, list_sites())}
+  def mount(%{"user_id" => user_id}, _session, socket) do
+    {:ok,
+     socket
+     |> assign(:user, Accounts.get_user!(user_id))
+     |> assign(:sites, list_user_sites(user_id))}
   end
 
   @impl true
@@ -53,7 +57,7 @@ defmodule GeneratorWeb.SiteLive.Index do
     |> assign(:site, nil)
   end
 
-  defp list_sites() do
-    Sites.list_sites()
+  defp list_user_sites(user_id) do
+    Sites.list_user_sites(user_id)
   end
 end

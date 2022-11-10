@@ -3,16 +3,16 @@
     <div class="sm:flex-auto">
       <h1 class="text-xl font-semibold text-gray-900">Billing</h1>
       <p class="mt-2 text-sm text-gray-700">Manage your billing information and more</p>
-    
+
       <h3 class="mt-2 text-lg font-medium leading-6 text-gray-700">Your cards</h3>
     </div>
-    
+
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
       <%= link "Add new card", to: Routes.billing_path(@conn, :new), class: "inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto" %>
     </div>
   </div>
 
-    <%= unless Enum.empty?(@credit_cards) or @credit_cards == :error do %>
+    <%= unless Enum.empty?(@credit_cards) do %>
     <div class="mt-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -26,6 +26,7 @@
                 <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Expiration month</th>
                 <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Default</th>
                 <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Added on</th>
+                <th></th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
@@ -42,7 +43,20 @@
                     </svg>
                   <% end %>
                 </td>
-                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6"><%= card.created_at %></td>
+                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6"><%= card.added_on %></td>
+                <td>
+                  <div class="flex justify-end">
+                    <%= unless card.default do %>
+                      <%= form_for @conn, Routes.billing_path(@conn, :make_default, card), fn _f -> %>
+                        <%= submit "Make default", class: "inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+                      <% end %>
+                    <% end %>
+
+                    <%= form_for @conn, Routes.billing_path(@conn, :delete, card), [method: :delete, data: [confirm: "Are you sure you want to delete this card?"]], fn _f -> %>
+                      <%= submit "Delete", class: "inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" %>
+                    <% end %>
+                  </div>
+                </td>
               </tr>
               <% end %>
               </tbody>
@@ -51,9 +65,5 @@
         </div>
       </div>
     </div>
-    <% end %>
-
-    <%= if @credit_cards == :error do %>
-      <p>There was an error displaying your cards info.</p>
     <% end %>
 </div>

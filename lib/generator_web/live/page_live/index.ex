@@ -4,10 +4,14 @@ defmodule GeneratorWeb.PageLive.Index do
   alias Generator.Sites
   alias Generator.Pages
   alias Generator.Pages.Page
+  alias Generator.Accounts
 
   @impl true
-  def mount(%{"site_id" => site_id}, _session, socket) do
-    {:ok, assign(socket, :site, Sites.get_site!(site_id))}
+  def mount(%{"site_id" => site_id, "user_id" => user_id}, _session, socket) do
+    {:ok,
+     socket
+     |> assign(:site, Sites.get_site!(site_id))
+     |> assign(:user, Accounts.get_user!(user_id))}
   end
 
   @impl true

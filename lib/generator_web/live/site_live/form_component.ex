@@ -41,7 +41,7 @@ defmodule GeneratorWeb.SiteLive.FormComponent do
   end
 
   defp save_site(socket, :new, site_params) do
-    case Sites.create_site(site_params) do
+    case Sites.create_site(Map.put(site_params, "user_id", socket.assigns.user.id)) do
       {:ok, _site} ->
         {:noreply,
          socket

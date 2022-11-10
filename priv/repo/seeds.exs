@@ -13,6 +13,34 @@ alias Generator.Repo
 alias Generator.Accounts.User
 alias Generator.Messages.Message
 alias Generator.Threads.Thread
+alias Generator.Plans.Plan
+alias Generator.Plans
+
+Repo.delete_all(Plan)
+
+%{
+  "name" => "Personal",
+  "price_monthly" => "19.90",
+  "price_yearly" => "209.90",
+  "braintree_id" => "kt2g"
+}
+|> Plans.create_plan()
+
+%{
+  "name" => "CMS",
+  "price_monthly" => "49.90",
+  "price_yearly" => "579.90",
+  "braintree_id" => "kt2g"
+}
+|> Plans.create_plan()
+
+%{
+  "name" => "Bussiness",
+  "price_monthly" => "34.90",
+  "price_yearly" => "399.90",
+  "braintree_id" => "kt2g"
+}
+|> Plans.create_plan()
 
 Repo.delete_all(Message)
 Repo.delete_all(Thread)
