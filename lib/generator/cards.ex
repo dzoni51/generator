@@ -16,6 +16,13 @@ defmodule Generator.Cards do
     |> Repo.all()
   end
 
+  def get_card_last_4_by_token(token) do
+    Card
+    |> where([c], c.token == ^token)
+    |> select([c], c.last_4)
+    |> Repo.one()
+  end
+
   def get_card!(id), do: Repo.get!(Card, id)
 
   def create_card(

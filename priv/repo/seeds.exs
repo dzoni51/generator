@@ -76,3 +76,44 @@ Generator.Messages.create_message(%{
   "body" => "message_body",
   "thread_id" => thread_3.id
 })
+
+%Braintree.CreditCard{
+  card_type: "test type",
+  last_4: "1234",
+  expiration_year: "2024",
+  expiration_month: "02",
+  default: true,
+  created_at: to_string(DateTime.utc_now()),
+  token: "test_token"
+}
+|> Generator.Cards.create_card(user_1.id)
+
+%{
+  "kind" => "SubscriptionChargedSuccessfully",
+  "timestamp" => to_string(DateTime.utc_now()),
+  "subscription_id" => "test_id",
+  "amount" => "19.90",
+  "user_id" => user_1.id,
+  "charged_with_payment_method_token" => "test_token"
+}
+|> Generator.Transactions.create_transaction()
+
+%{
+  "kind" => "SubscriptionCanceled",
+  "timestamp" => to_string(DateTime.utc_now()),
+  "subscription_id" => "test_id",
+  "amount" => "19.90",
+  "user_id" => user_1.id,
+  "charged_with_payment_method_token" => "test_token"
+}
+|> Generator.Transactions.create_transaction()
+
+%{
+  "kind" => "SubscriptionChargedUnsuccessfully",
+  "timestamp" => to_string(DateTime.utc_now()),
+  "subscription_id" => "test_id",
+  "amount" => "19.90",
+  "user_id" => user_1.id,
+  "charged_with_payment_method_token" => "test_token"
+}
+|> Generator.Transactions.create_transaction()

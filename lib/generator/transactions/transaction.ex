@@ -6,7 +6,8 @@ defmodule Generator.Transactions.Transaction do
     field :timestamp, :string
     field :subscription_id, :string
     field :kind, :string
-    field :balance, :string
+    field :amount, :string
+    field :charged_with_payment_method_token, :string
 
     belongs_to :user, Generator.Accounts.User
   end
@@ -18,7 +19,14 @@ defmodule Generator.Transactions.Transaction do
 
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:timestamp, :subscription_id, :kind, :balance, :user_id])
-    |> validate_required([:user_id])
+    |> cast(attrs, [
+      :timestamp,
+      :subscription_id,
+      :kind,
+      :amount,
+      :user_id,
+      :charged_with_payment_method_token
+    ])
+    |> validate_required([:user_id, :charged_with_payment_method_token])
   end
 end

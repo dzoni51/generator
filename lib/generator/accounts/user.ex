@@ -157,6 +157,6 @@ defmodule Generator.Accounts.User do
   end
 
   def remove_plan(user) do
-    change(user, %{plan_id: nil, subscription_id: nil})
+    change(user, %{plan_id: nil, subscription_id: nil, plan_started_on: nil})
   end
 end

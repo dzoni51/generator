@@ -7,9 +7,14 @@ defmodule GeneratorWeb.BillingController do
   alias Generator.Cards.Card
   alias Generator.Accounts
   alias Generator.Accounts.User
+  alias Generator.Transactions
 
   def index(conn, _params) do
-    render(conn, "index.html", credit_cards: Cards.list_user_cards(conn.assigns.current_user.id))
+    render(conn, "index.html",
+      credit_cards: Cards.list_user_cards(conn.assigns.current_user.id),
+      plan: Accounts.get_user_plan(conn.assigns.current_user),
+      transactions: Transactions.list_user_transactions(conn.assigns.current_user.id)
+    )
   end
 
   def new(conn, _params) do
@@ -77,28 +82,27 @@ defmodule GeneratorWeb.BillingController do
     end
   end
 
-  # TODO: Also see if a customer has active subscription since subscriptions
-  # TODO: default payment method needs also to be updated
   def make_default(conn, %{"id" => id}) do
-    with %Card{token: token} = card <- Cards.get_card!(id) do
-      case Braintree.Customer.update(conn.assigns.current_user.braintree_id, %{
+    with %Card{token: token} = card <- Cards.get_card!(id),
+         {:ok, _} <-
+           Braintree.Customer.update(conn.assigns.current_user.braintree_id, %{
              default_payment_method_token: token
-           }) do
-        {:ok, _} ->
-          Cards.set_default(card, conn.assigns.current_user.id)
+           }),
+         {:ok, _} <-
+           maybe_update_user_current_subscription_payment_method(conn.assigns.current_user, token) do
+      Cards.set_default(card, conn.assigns.current_user.id)
 
-          conn
-          |> put_flash(:info, "Card updated successfully.")
-          |> redirect(to: Routes.billing_path(conn, :index))
-
-        _ ->
-          conn
-          |> put_flash(
-            :error,
-            "Something went wrong when trying to update your card. Please try again."
-          )
-          |> redirect(to: Routes.billing_path(conn, :index))
-      end
+      conn
+      |> put_flash(:info, "Card updated successfully.")
+      |> redirect(to: Routes.billing_path(conn, :index))
+    else
+      _ ->
+        conn
+        |> put_flash(
+          :error,
+          "Something went wrong when trying to update your card. Please try again."
+        )
+        |> redirect(to: Routes.billing_path(conn, :index))
     end
   end
 
@@ -117,4 +121,14 @@ defmodule GeneratorWeb.BillingController do
   end
 
   defp maybe_create_braintree_customer(user), do: {:ok, user}
+
+  defp maybe_update_user_current_subscription_payment_method(%User{subscription_id: nil}, _token),
+    do: {:ok, :no_active_subscription}
+
+  defp maybe_update_user_current_subscription_payment_method(
+         %User{subscription_id: sub_id},
+         token
+       ) do
+    Braintree.Subscription.update(sub_id, %{"payment_method_token" => token})
+  end
 end

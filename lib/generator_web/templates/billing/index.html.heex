@@ -3,8 +3,16 @@
     <div class="sm:flex-auto">
       <h1 class="text-xl font-semibold text-gray-900">Billing</h1>
       <p class="mt-2 text-sm text-gray-700">Manage your billing information and more</p>
+      <p class="mt-2 text-sm text-gray-700">
+        Current plan:
+        <%= if is_nil(@plan) do %>
+          None
+        <% else %>
+         <%= @plan.name %>
+        <% end %>
+      </p>
 
-      <h3 class="mt-2 text-lg font-medium leading-6 text-gray-700">Your cards</h3>
+      <h3 class="mt-2 text-lg font-medium leading-6 text-gray-700">Cards</h3>
     </div>
 
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -12,7 +20,11 @@
     </div>
   </div>
 
-    <%= unless Enum.empty?(@credit_cards) do %>
+    <%= if Enum.empty?(@credit_cards) do %>
+    <p>
+      You currently do not have any cards. <%= link "Add one now?", to: Routes.billing_path(@conn, :new), class: "text-blue-700 underline" %>
+    </p>
+    <% else %>
     <div class="mt-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -57,6 +69,42 @@
                     <% end %>
                   </div>
                 </td>
+              </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+    <h3 class="mt-2 text-lg font-medium leading-6 text-gray-700">Transactions</h3>
+
+    <%= if Enum.empty?(@transactions) do %>
+    <p>You do not currently have any transactions information. Any information about transactions will appear here.
+    </p>
+    <% else %>
+    <div class="mt-8 flex flex-col">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr class="divide-x divide-gray-200">
+                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Kind</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Amount</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Payment method</th>
+                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <%= for transaction <- @transactions do %>
+              <tr class="divide-x divide-gray-200">
+                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6"><%= transaction.kind %></td>
+                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= transaction.amount %></td>
+                <td class="whitespace-nowrap p-4 text-sm text-gray-500">*<%= Generator.Cards.get_card_last_4_by_token(transaction.charged_with_payment_method_token) %></td>
+                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= Utils.format_timestamp(transaction.timestamp) %></td>
               </tr>
               <% end %>
               </tbody>

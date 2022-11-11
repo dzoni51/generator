@@ -59,6 +59,25 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
+config :generator, Oban,
+  repo: Generator.Repo,
+  plugins: [Oban.Plugins.Pruner],
+  queues: [subscriptions: 10]
+
+config :ex_ngrok,
+  # The name of the Ngrok executable
+  executable: "ngrok",
+  # The type of tunnel (http, https, tcp, or tls)
+  protocol: "https",
+  # The port to which Ngrok will forward requests
+  port: "4000",
+  # The URL of Ngrok's API (used to retrieve its settings)
+  api_url: "http://localhost:4040/api/tunnels",
+  # The amount of sleep (in ms) to put between attempts to connect to Ngrok
+  sleep_between_attempts: 200,
+  # Any other tunneling options that will be passed directly to Ngrok
+  options: ""
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

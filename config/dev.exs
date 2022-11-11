@@ -81,3 +81,12 @@ config :braintree,
   merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
   public_key: {:system, "BRAINTREE_PUBLIC_KEY"},
   private_key: {:system, "BRAINTREE_PRIVATE_KEY"}
+
+config :generator, Oban,
+  repo: Generator.Repo,
+  plugins: [
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"@daily", Generator.ObanJobs.SubscriptionUpdater}
+     ]}
+  ]

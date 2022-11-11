@@ -389,6 +389,12 @@ defmodule Generator.Accounts do
     end
   end
 
+  def get_user_plan(user) do
+    user
+    |> Ecto.assoc(:plan)
+    |> Repo.one()
+  end
+
   def list_users() do
     Repo.all(User)
     |> Repo.preload(:plan)
@@ -397,5 +403,17 @@ defmodule Generator.Accounts do
   def get_user_by_subscription_id(sub_id) do
     query = from u in User, where: u.subscription_id == ^sub_id
     Repo.one(query)
+  end
+
+  def list_users_that_started_plan_in_last_month() do
+    from = Utils.first_day_of_last_month()
+    to = Utils.last_day_of_last_month()
+
+    query =
+      from u in User,
+        where: u.plan_started_on >= ^from and u.plan_started_on <= ^to,
+        preload: :plan
+
+    Repo.all(query)
   end
 end

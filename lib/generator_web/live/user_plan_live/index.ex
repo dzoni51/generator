@@ -69,8 +69,8 @@ defmodule GeneratorWeb.UserPlanLive.Index do
            Braintree.Subscription.create(%{
              payment_method_token: Cards.get_user_default_payment_token(socket.assigns.user.id),
              plan_id: plan_braintree_id,
-             first_billing_date: Utils.first_subscription_billing_date(),
-             next_billing_period_amount: Utils.prorate_next_billing_period_amount(plan)
+             first_billing_date: to_string(Utils.first_subscription_billing_date()),
+             price: to_string(Utils.prorate_subscription_amount(plan))
            }),
          {:ok, user} <-
            Accounts.apply_plan(socket.assigns.user, %{

@@ -53,7 +53,9 @@ defmodule Generator.MixProject do
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:braintree, "~> 0.13"},
       {:timex, "~> 3.0"},
-      {:decimal, "~> 2.0"}
+      {:decimal, "~> 2.0"},
+      {:ex_ngrok, "~> 0.3.0", only: [:dev]},
+      {:oban, "~> 2.13"}
     ]
   end
 

@@ -6,7 +6,8 @@ defmodule Generator.Repo.Migrations.AddTransactions do
       add :timestamp, :string
       add :subscription_id, :string
       add :kind, :string
-      add :balance, :string
+      add :amount, :string
+      add :charged_with_payment_method_token, :string
       add :user_id, references(:users)
     end
   end

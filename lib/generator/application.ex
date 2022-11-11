@@ -15,9 +15,10 @@ defmodule Generator.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Generator.PubSub},
       # Start the Endpoint (http/https)
-      GeneratorWeb.Endpoint
+      GeneratorWeb.Endpoint,
       # Start a worker by calling: Generator.Worker.start_link(arg)
       # {Generator.Worker, arg}
+      {Oban, Application.fetch_env!(:generator, Oban)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
