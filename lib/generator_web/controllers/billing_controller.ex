@@ -77,6 +77,8 @@ defmodule GeneratorWeb.BillingController do
     end
   end
 
+  # TODO: Also see if a customer has active subscription since subscriptions
+  # TODO: default payment method needs also to be updated
   def make_default(conn, %{"id" => id}) do
     with %Card{token: token} = card <- Cards.get_card!(id) do
       case Braintree.Customer.update(conn.assigns.current_user.braintree_id, %{

@@ -362,9 +362,9 @@ defmodule Generator.Accounts do
     |> Repo.update()
   end
 
-  def apply_plan(user, plan_id, subscription_id) do
+  def apply_plan(user, attrs) do
     user
-    |> User.apply_plan(%{"plan_id" => plan_id, "subscription_id" => subscription_id})
+    |> User.apply_plan(attrs)
     |> Repo.update()
   end
 
@@ -392,5 +392,10 @@ defmodule Generator.Accounts do
   def list_users() do
     Repo.all(User)
     |> Repo.preload(:plan)
+  end
+
+  def get_user_by_subscription_id(sub_id) do
+    query = from u in User, where: u.subscription_id == ^sub_id
+    Repo.one(query)
   end
 end

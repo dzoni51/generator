@@ -63,14 +63,21 @@ defmodule GeneratorWeb.UserPlanLive.Index do
 
   @impl true
   def handle_event("change-plan", %{"plan" => %{"new_plan" => new_plan_name}}, socket) do
-    with %Plan{braintree_id: plan_braintree_id, id: plan_id} <-
+    with %Plan{braintree_id: plan_braintree_id, id: plan_id} = plan <-
            Plans.get_plan_by_name(new_plan_name),
          {:ok, sub} =
            Braintree.Subscription.create(%{
              payment_method_token: Cards.get_user_default_payment_token(socket.assigns.user.id),
-             plan_id: plan_braintree_id
+             plan_id: plan_braintree_id,
+             first_billing_date: Utils.first_subscription_billing_date(),
+             next_billing_period_amount: Utils.prorate_next_billing_period_amount(plan)
            }),
-         {:ok, user} <- Accounts.apply_plan(socket.assigns.user, plan_id, sub.id) do
+         {:ok, user} <-
+           Accounts.apply_plan(socket.assigns.user, %{
+             "plan_id" => plan_id,
+             "subscription_id" => sub.id,
+             "plan_started_on" => Date.utc_today()
+           }) do
       {:noreply,
        socket
        |> put_flash(:info, "Plan applied successfully")

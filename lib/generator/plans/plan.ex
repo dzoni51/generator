@@ -4,8 +4,8 @@ defmodule Generator.Plans.Plan do
 
   schema "plans" do
     field :name, :string
-    field :price_monthly, :string
-    field :price_yearly, :string
+    field :price_monthly, :decimal
+    field :price_yearly, :decimal
     field :braintree_id
   end
 

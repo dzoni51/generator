@@ -11,6 +11,7 @@ defmodule Generator.Repo.Migrations.AddUsersAuthTables do
       add :confirmed_at, :naive_datetime
       add :plan_id, references(:plans)
       add :subscription_id, :string
+      add :plan_started_on, :date
       timestamps()
     end
 

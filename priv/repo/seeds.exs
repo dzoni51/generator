@@ -20,24 +20,24 @@ Repo.delete_all(Plan)
 
 %{
   "name" => "Personal",
-  "price_monthly" => "19.90",
-  "price_yearly" => "209.90",
+  "price_monthly" => Decimal.new("19.90"),
+  "price_yearly" => Decimal.new("209.90"),
   "braintree_id" => "kt2g"
 }
 |> Plans.create_plan()
 
 %{
   "name" => "CMS",
-  "price_monthly" => "49.90",
-  "price_yearly" => "579.90",
+  "price_monthly" => Decimal.new("49.90"),
+  "price_yearly" => Decimal.new("579.90"),
   "braintree_id" => "kt2g"
 }
 |> Plans.create_plan()
 
 %{
   "name" => "Bussiness",
-  "price_monthly" => "34.90",
-  "price_yearly" => "399.90",
+  "price_monthly" => Decimal.new("34.90"),
+  "price_yearly" => Decimal.new("399.90"),
   "braintree_id" => "kt2g"
 }
 |> Plans.create_plan()

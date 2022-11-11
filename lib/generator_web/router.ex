@@ -21,6 +21,12 @@ defmodule GeneratorWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/webhooks", GeneratorWeb do
+    pipe_through :api
+
+    post "/subscriptions", WebhookController, :create
+  end
+
   scope "/admin", GeneratorWeb do
     pipe_through :browser
 

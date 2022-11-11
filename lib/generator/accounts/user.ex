@@ -9,10 +9,12 @@ defmodule Generator.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :braintree_id, :string
     field :subscription_id, :string
+    field :plan_started_on, :date
 
     has_many :threads, Generator.Threads.Thread
     has_many :sites, Generator.Sites.Site
     has_many :cards, Generator.Cards.Card
+    has_many :transactions, Generator.Transactions.Transaction
     belongs_to :plan, Generator.Plans.Plan
     timestamps()
   end
@@ -151,7 +153,7 @@ defmodule Generator.Accounts.User do
 
   def apply_plan(user, attrs) do
     user
-    |> cast(attrs, [:plan_id, :subscription_id])
+    |> cast(attrs, [:plan_id, :subscription_id, :plan_started_on])
   end
 
   def remove_plan(user) do

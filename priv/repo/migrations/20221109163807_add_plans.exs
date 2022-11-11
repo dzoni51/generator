@@ -4,8 +4,8 @@ defmodule Generator.Repo.Migrations.AddPlans do
   def change do
     create table(:plans) do
       add :name, :string
-      add :price_monthly, :string
-      add :price_yearly, :string
+      add :price_monthly, :decimal
+      add :price_yearly, :decimal
       add :braintree_id, :string
     end
   end
