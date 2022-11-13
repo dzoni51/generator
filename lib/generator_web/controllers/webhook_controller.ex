@@ -35,7 +35,13 @@ defmodule GeneratorWeb.WebhookController do
          }
        }) do
     with %Braintree.Subscription{} = subscription <- Braintree.Subscription.new(sub_map),
-         %User{id: user_id} <- Accounts.get_user_by_subscription_id(subscription.id) do
+         %User{id: user_id} = user <- Accounts.get_user_by_subscription_id(subscription.id) do
+      user
+      |> Accounts.update_next_billing_info(%{
+        "next_billing_period_amount" => subscription.next_billing_period_amount,
+        "next_billing_date" => subscription.next_billing_date
+      })
+
       %{
         "kind" => kind,
         "timestamp" => timestamp,

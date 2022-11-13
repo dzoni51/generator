@@ -10,6 +10,9 @@ defmodule Generator.Accounts.User do
     field :braintree_id, :string
     field :subscription_id, :string
     field :plan_started_on, :date
+    field :custom_plan_price, :string
+    field :next_billing_date, :string
+    field :next_billing_period_amount, :string
 
     has_many :threads, Generator.Threads.Thread
     has_many :sites, Generator.Sites.Site
@@ -153,10 +156,26 @@ defmodule Generator.Accounts.User do
 
   def apply_plan(user, attrs) do
     user
-    |> cast(attrs, [:plan_id, :subscription_id, :plan_started_on])
+    |> cast(attrs, [
+      :plan_id,
+      :subscription_id,
+      :plan_started_on,
+      :next_billing_period_amount,
+      :next_billing_date
+    ])
   end
 
   def remove_plan(user) do
     change(user, %{plan_id: nil, subscription_id: nil, plan_started_on: nil})
+  end
+
+  def admin_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:custom_plan_price])
+  end
+
+  def next_billing_info_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:next_billing_period_amount, :next_billing_date])
   end
 end

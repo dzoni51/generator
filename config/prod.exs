@@ -58,14 +58,3 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
-
-#TODO: Update this to run on first of every month, not sure what @monthly does
-
-config :generator, Oban,
-  repo: Generator.Repo,
-  plugins: [
-    {Oban.Plugins.Cron,
-     crontab: [
-       {"@monthly", Generator.ObanJobs.SubscriptionUpdater}
-     ]}
-  ]

@@ -416,4 +416,18 @@ defmodule Generator.Accounts do
 
     Repo.all(query)
   end
+
+  def admin_update_user(%User{} = user, attrs) do
+    user
+    |> User.admin_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def admin_change_user(%User{} = user, attrs \\ %{}), do: User.admin_changeset(user, attrs)
+
+  def update_next_billing_info(%User{} = user, attrs) do
+    user
+    |> User.next_billing_info_changeset(attrs)
+    |> Repo.update()
+  end
 end

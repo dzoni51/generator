@@ -5,8 +5,8 @@ defmodule Generator.Sites do
 
   import Ecto.Query, warn: false
   alias Generator.Repo
-
   alias Generator.Sites.Site
+
 
   def list_sites do
     Repo.all(Site)

@@ -16,6 +16,10 @@
             "Personal": "personal",
             "CMS": "cms",
             "Bussiness": "bussiness",
+            "Personal yearly": "personal_yearly",
+            "CMS yearly": "cms_yearly",
+            "Bussiness yearly": "bussiness_yearly",
+            "Custom": "custom",
             "No plan": "no_plan"
         ], selected: @current_plan_name, class: "mt-1 rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" %>
 
@@ -50,4 +54,37 @@
        </div>
      </div>
    </div>
+
+    <%= if Enum.empty?(@transactions) do %>
+    <p>This user currently has no transactions</p>
+    <% else %>
+    <div class="mt-8 flex flex-col">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr class="divide-x divide-gray-200">
+                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Kind</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Amount</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Payment method</th>
+                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <%= for transaction <- @transactions do %>
+              <tr class="divide-x divide-gray-200">
+                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6"><%= transaction.kind %></td>
+                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= transaction.amount %></td>
+                <td class="whitespace-nowrap p-4 text-sm text-gray-500">*<%= Generator.Cards.get_card_last_4_by_token(transaction.charged_with_payment_method_token) %></td>
+                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= Utils.format_timestamp(transaction.timestamp) %></td>
+              </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
 </div>

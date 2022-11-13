@@ -12,6 +12,9 @@ defmodule Generator.Repo.Migrations.AddUsersAuthTables do
       add :plan_id, references(:plans)
       add :subscription_id, :string
       add :plan_started_on, :date
+      add :custom_plan_price, :string
+      add :next_billing_date, :string
+      add :next_billing_period_amount, :string
       timestamps()
     end
 

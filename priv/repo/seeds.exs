@@ -15,30 +15,66 @@ alias Generator.Messages.Message
 alias Generator.Threads.Thread
 alias Generator.Plans.Plan
 alias Generator.Plans
+alias Generator.Cards.Card
+alias Generator.Transactions.Transaction
 
 Repo.delete_all(Plan)
+Repo.delete_all(Transaction)
+Repo.delete_all(Card)
 
 %{
   "name" => "Personal",
-  "price_monthly" => Decimal.new("19.90"),
-  "price_yearly" => Decimal.new("209.90"),
+  "price" => Decimal.new("19.90"),
+  "type" => :monthly,
   "braintree_id" => "kt2g"
+}
+|> Plans.create_plan()
+
+%{
+  "name" => "Personal yearly",
+  "price" => Decimal.new("209.90"),
+  "type" => :yearly,
+  "braintree_id" => "6yzw"
 }
 |> Plans.create_plan()
 
 %{
   "name" => "CMS",
-  "price_monthly" => Decimal.new("49.90"),
-  "price_yearly" => Decimal.new("579.90"),
+  "price" => Decimal.new("49.90"),
+  "type" => :monthly,
   "braintree_id" => "kt2g"
 }
 |> Plans.create_plan()
 
 %{
+  "name" => "CMS yearly",
+  "price" => Decimal.new("579.90"),
+  "type" => :yearly,
+  "braintree_id" => "6yzw"
+}
+|> Plans.create_plan()
+
+%{
   "name" => "Bussiness",
-  "price_monthly" => Decimal.new("34.90"),
-  "price_yearly" => Decimal.new("399.90"),
+  "price" => Decimal.new("34.90"),
+  "type" => :monthly,
   "braintree_id" => "kt2g"
+}
+|> Plans.create_plan()
+
+%{
+  "name" => "Bussiness yearly",
+  "price" => Decimal.new("399.90"),
+  "type" => :yearly,
+  "braintree_id" => "6yzw"
+}
+|> Plans.create_plan()
+
+%{
+  "name" => "Custom",
+  "price" => Decimal.new("19.90"),
+  "braintree_id" => "kt2g",
+  "type" => :monthly
 }
 |> Plans.create_plan()
 

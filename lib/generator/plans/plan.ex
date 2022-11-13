@@ -4,8 +4,8 @@ defmodule Generator.Plans.Plan do
 
   schema "plans" do
     field :name, :string
-    field :price_monthly, :decimal
-    field :price_yearly, :decimal
+    field :type, Ecto.Enum, values: [:monthly, :yearly]
+    field :price, :decimal
     field :braintree_id
   end
 
@@ -16,7 +16,7 @@ defmodule Generator.Plans.Plan do
 
   def changeset(plan, attrs) do
     plan
-    |> cast(attrs, [:name, :price_monthly, :price_yearly, :braintree_id])
-    |> validate_required([:name, :price_monthly, :price_yearly, :braintree_id])
+    |> cast(attrs, [:name, :price, :type, :braintree_id])
+    |> validate_required([:name, :price, :type, :braintree_id])
   end
 end

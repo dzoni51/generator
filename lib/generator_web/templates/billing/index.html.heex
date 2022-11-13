@@ -1,31 +1,69 @@
+
 <div class="px-4 sm:px-6 lg:px-8">
-  <div class="sm:flex sm:items-center">
-    <div class="sm:flex-auto">
-      <h1 class="text-xl font-semibold text-gray-900">Billing</h1>
-      <p class="mt-2 text-sm text-gray-700">Manage your billing information and more</p>
-      <p class="mt-2 text-sm text-gray-700">
-        Current plan:
-        <%= if is_nil(@plan) do %>
-          None
-        <% else %>
-         <%= @plan.name %>
-        <% end %>
-      </p>
-
-      <h3 class="mt-2 text-lg font-medium leading-6 text-gray-700">Cards</h3>
-    </div>
-
-    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-      <%= link "Add new card", to: Routes.billing_path(@conn, :new), class: "inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto" %>
-    </div>
+  <div class="w-1/4">
+  <div>
+    <h3 class="text-lg font-medium leading-6 text-gray-900">Billing Information</h3>
+    <p class="mt-1 max-w-2xl text-sm text-gray-500">Billing & plan details.</p>
   </div>
+  <div class="mt-5 border-t border-gray-200">
+    <dl class="sm:divide-y sm:divide-gray-200">
+      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+        <dt class="text-sm font-medium text-gray-500">Current plan</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+          <%= if is_nil(@plan) do %>
+            None
+          <% else %>
+           <%= @plan.name %>
+          <% end %>
+        </dd>
+      </div>
+      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+        <dt class="text-sm font-medium text-gray-500">Next billing date</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+          <%= if is_nil(@current_user.next_billing_date) do %>
+            -
+          <% else %>
+           <%= @current_user.next_billing_date %>
+          <% end %>
+        </dd>
+      </div>
+      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+        <dt class="text-sm font-medium text-gray-500">Next bill amount</dt>
+        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+          <%= if is_nil(@current_user.next_billing_period_amount) do %>
+            -
+          <% else %>
+           <%= @current_user.next_billing_period_amount %>
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<div class="relative">
+  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+    <div class="w-full border-t border-gray-300"></div>
+  </div>
+  <div class="relative flex items-center justify-between">
+    <span class="bg-white pr-3 text-lg font-medium text-gray-900">Cards</span>
+
+    <%= link to: Routes.billing_path(@conn, :new), class: "inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-1.5 text-sm font-medium leading-5 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" do %>
+    <!-- Heroicon name: mini/plus -->
+      <svg class="-ml-1.5 mr-1 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+      </svg>
+      <span>Add new card</span>
+    <% end %>
+  </div>
+</div>
 
     <%= if Enum.empty?(@credit_cards) do %>
     <p>
       You currently do not have any cards. <%= link "Add one now?", to: Routes.billing_path(@conn, :new), class: "text-blue-700 underline" %>
     </p>
     <% else %>
-    <div class="mt-8 flex flex-col">
+    <div class="mt-4 mb-4 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
           <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -79,13 +117,20 @@
     </div>
     <% end %>
 
-    <h3 class="mt-2 text-lg font-medium leading-6 text-gray-700">Transactions</h3>
+  <div class="relative">
+    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+      <div class="w-full border-t border-gray-300"></div>
+    </div>
+    <div class="relative flex justify-start">
+      <span class="bg-white pr-3 text-lg font-medium text-gray-900">Transactions</span>
+    </div>
+  </div>
 
     <%= if Enum.empty?(@transactions) do %>
     <p>You do not currently have any transactions information. Any information about transactions will appear here.
     </p>
     <% else %>
-    <div class="mt-8 flex flex-col">
+    <div class="mt-4 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
           <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

@@ -6,6 +6,10 @@ defmodule Generator.Plans do
   @bussiness "Bussiness"
   @personal "Personal"
   @cms "CMS"
+  @bussiness_yearly @bussiness <> " yearly"
+  @personal_yearly @personal <> " yearly"
+  @cms_yearly @cms <> " yearly"
+  @custom "Custom"
 
   import Ecto.Query, warn: false
   alias Generator.Repo
@@ -22,6 +26,10 @@ defmodule Generator.Plans do
       name == "bussiness" -> @bussiness
       name == "personal" -> @personal
       name == "cms" -> @cms
+      name == "bussiness_yearly" -> @bussiness_yearly
+      name == "personal_yearly" -> @personal_yearly
+      name == "cms_yearly" -> @cms_yearly
+      name == "custom" -> @custom
       true -> nil
     end
   end
@@ -37,6 +45,12 @@ defmodule Generator.Plans do
   def personal(), do: "personal"
   def cms(), do: "cms"
   def bussiness(), do: "bussiness"
+
+  def personal_yearly(), do: "personal_yearly"
+  def cms_yearly(), do: "cms_yearly"
+  def bussiness_yearly(), do: "bussiness_yearly"
+
+  def custom(), do: "custom"
 
   def change_plan(plan, attrs \\ %{}) do
     Plan.changeset(plan, attrs)

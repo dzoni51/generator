@@ -31,6 +31,7 @@ defmodule GeneratorWeb.Router do
     pipe_through :browser
 
     live "/users", UserLive.Index, :index
+    live "/users/:id/edit", UserLive.Index, :edit
 
     live "/users/:user_id/sites", SiteLive.Index, :index
     live "/users/:user_id/sites/new", SiteLive.Index, :new
