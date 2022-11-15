@@ -24,7 +24,8 @@ defmodule GeneratorWeb.Router do
   scope "/webhooks", GeneratorWeb do
     pipe_through :api
 
-    post "/subscriptions", WebhookController, :create
+    post "/subscriptions", SubscriptionController, :create
+    post "/report-visits", VisitReportController, :create
   end
 
   scope "/admin", GeneratorWeb do

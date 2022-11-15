@@ -1,5 +1,5 @@
 defmodule Generator.Transactions.Transaction do
-  use Ecto.Schema
+  use Generator.Schema
   import Ecto.Changeset
 
   schema "transactions" do

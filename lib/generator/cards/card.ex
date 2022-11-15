@@ -1,5 +1,6 @@
 defmodule Generator.Cards.Card do
-  use Ecto.Schema
+  use Generator.Schema
+
   import Ecto.Changeset
 
   schema "cards" do

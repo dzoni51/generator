@@ -7,7 +7,6 @@ defmodule Generator.Sites do
   alias Generator.Repo
   alias Generator.Sites.Site
 
-
   def list_sites do
     Repo.all(Site)
   end
@@ -35,6 +34,12 @@ defmodule Generator.Sites do
 
   def change_site(%Site{} = site, attrs \\ %{}) do
     Site.changeset(site, attrs)
+  end
+
+  def update_visits(%Site{} = site, new_visits) do
+    site
+    |> Site.update_visits(%{"visits" => new_visits})
+    |> Repo.update()
   end
 
   def build_site(site_id) do
@@ -351,7 +356,6 @@ defmodule Generator.Sites do
     System.cmd("mix", [
       "phx.new",
       app_path,
-      "--no-ecto",
       "--no-gettext",
       "--no-dashboard",
       "--no-live",
@@ -402,6 +406,15 @@ defmodule Generator.Sites do
       """,
       """
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev}
+      """,
+      """
+      {:nebulex, "~> 2.4"}
+      """,
+      """
+      {:quantum, "~> 3.0"}
+      """,
+      """
+      {:httpoison, "~> 1.8"}
       """
     ]
   end
@@ -467,6 +480,8 @@ defmodule Generator.Sites do
 
   def deploy(site_id) do
     with %Site{} = site <- get_site!(site_id) do
+      update_site_deploy_timestamp(site)
+
       app_path = Path.join(priv_path(), site.module)
 
       System.cmd(
@@ -483,5 +498,11 @@ defmodule Generator.Sites do
         cd: app_path
       )
     end
+  end
+
+  def update_site_deploy_timestamp(site) do
+    site
+    |> Site.deploy()
+    |> Repo.update()
   end
 end

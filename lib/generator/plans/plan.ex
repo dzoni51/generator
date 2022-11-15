@@ -1,5 +1,6 @@
 defmodule Generator.Plans.Plan do
-  use Ecto.Schema
+  use Generator.Schema
+
   import Ecto.Changeset
 
   schema "plans" do

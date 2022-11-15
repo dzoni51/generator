@@ -1,5 +1,5 @@
 defmodule Generator.Messages.Message do
-  use Ecto.Schema
+  use Generator.Schema
 
   import Ecto.Changeset
 

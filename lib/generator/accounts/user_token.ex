@@ -1,5 +1,5 @@
 defmodule Generator.Accounts.UserToken do
-  use Ecto.Schema
+  use Generator.Schema
   import Ecto.Query
   alias Generator.Accounts.UserToken
 

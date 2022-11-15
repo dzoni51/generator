@@ -1,5 +1,5 @@
 defmodule Generator.Threads.Thread do
-  use Ecto.Schema
+  use Generator.Schema
 
   import Ecto.Changeset
 

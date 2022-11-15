@@ -1,5 +1,5 @@
 defmodule Generator.Accounts.User do
-  use Ecto.Schema
+  use Generator.Schema
   import Ecto.Changeset
 
   schema "users" do

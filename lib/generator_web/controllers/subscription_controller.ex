@@ -1,4 +1,4 @@
-defmodule GeneratorWeb.WebhookController do
+defmodule GeneratorWeb.SubscriptionController do
   use GeneratorWeb, :controller
 
   alias Generator.Transactions

@@ -1,5 +1,5 @@
 defmodule Generator.Admins.Admin do
-  use Ecto.Schema
+  use Generator.Schema
 
   import Ecto.Changeset
 
