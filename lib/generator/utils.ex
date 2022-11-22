@@ -79,4 +79,53 @@ defmodule Utils do
     timestamp
     |> Timex.from_now()
   end
+
+  @alphabet_lower_case [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z"
+  ]
+
+  def generate_random_salt() do
+    alphabet_upper_case =
+      Enum.into(@alphabet_lower_case, [], fn letter -> String.upcase(letter) end)
+
+    numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    Enum.reduce(1..8, "", fn _, acc ->
+      case Enum.random([1, 2, 3]) do
+        1 ->
+          acc <> Enum.random(@alphabet_lower_case)
+
+        2 ->
+          acc <> Enum.random(alphabet_upper_case)
+
+        3 ->
+          acc <> to_string(Enum.random(numbers))
+      end
+    end)
+  end
 end
