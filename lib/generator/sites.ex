@@ -7,7 +7,8 @@ defmodule Generator.Sites do
   alias Generator.Repo
   alias Generator.Sites.Site
   alias Generator.Paths
-  alias Generator.FileBuilder
+  alias Generator.Builders.FileBuilder
+  alias Generator.Builders.Reporter
   alias Generator.Pages.Page
 
   def list_sites do
@@ -69,8 +70,19 @@ defmodule Generator.Sites do
            FileBuilder.build_controller_function(page_name) <> controller_content}
         end)
 
+      # * Write Reporter
+      site
+      |> Reporter.write()
+
+      # * Write router
       module
-      |> update_router(String.trim(routes))
+      |> Paths.router_path()
+      |> File.write(FileBuilder.router_file(module, String.trim(routes)))
+
+      # * Write application file
+      module
+      |> Paths.application_file_path()
+      |> File.write(FileBuilder.application_file(module))
 
       module
       |> build_controller(String.trim(controller_content))
@@ -81,6 +93,8 @@ defmodule Generator.Sites do
 
       # * Write configs
       write_configs(site)
+
+      :ok
     end
   end
 
@@ -160,26 +174,6 @@ defmodule Generator.Sites do
       "--no-mailer",
       "--no-install"
     ])
-  end
-
-  defp default_router_route do
-    """
-    get "/", PageController, :index
-    """
-  end
-
-  defp update_router(module, routes) do
-    router_path =
-      module
-      |> Paths.router_path()
-
-    {:ok, router} =
-      router_path
-      |> File.read()
-
-    router_content = String.replace(router, default_router_route(), routes)
-
-    File.write(router_path, router_content)
   end
 
   def deploy(site_id) do

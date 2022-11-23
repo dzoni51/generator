@@ -1,4 +1,4 @@
-defmodule Generator.FileBuilder do
+defmodule Generator.Builders.FileBuilder do
   @moduledoc """
   A module used for building files.
   """
@@ -278,6 +278,7 @@ defmodule Generator.FileBuilder do
     """
     defmodule Reporter do
       def report_visits() do
+        Process.sleep(Enum.random(1..120000))
         with {:ok, %HTTPoison.Response{status_code: 200}} <-
                HTTPoison.post(
                  "https://5da3-2a06-5b03-a0ff-fa00-00-3.ngrok.io/webhooks/report-visits",
@@ -296,6 +297,76 @@ defmodule Generator.FileBuilder do
     """
     defmodule Scheduler do
       use Quantum, otp_app: :#{module}
+    end
+    """
+  end
+
+  @spec application_file(module_string()) :: String.t()
+  def application_file(module) do
+    camelized_module_name = camelize(module)
+
+    """
+    defmodule #{camelized_module_name}.Application do
+
+      use Application
+
+      @impl true
+      def start(_type, _args) do
+        children = [
+          # Start the Ecto repository
+          #{camelized_module_name}.Repo,
+          # Start the Telemetry supervisor
+          #{camelized_module_name}Web.Telemetry,
+          # Start the PubSub system
+          {Phoenix.PubSub, name: #{camelized_module_name}.PubSub},
+          # Start the Endpoint (http/https)
+          #{camelized_module_name}Web.Endpoint,
+          {Cache, []},
+          Scheduler
+        ]
+
+        opts = [strategy: :one_for_one, name: #{camelized_module_name}.Supervisor]
+        Supervisor.start_link(children, opts)
+      end
+
+      # Tell Phoenix to update the endpoint configuration
+      # whenever the application is updated.
+      @impl true
+      def config_change(changed, _new, removed) do
+        #{camelized_module_name}Web.Endpoint.config_change(changed, removed)
+        :ok
+      end
+    end
+    """
+  end
+
+  @spec router_file(module_string(), String.t()) :: String.t()
+  def router_file(module, routes) do
+    camelized_module_name = camelize(module)
+
+    """
+    defmodule #{camelized_module_name}Web.Router do
+      use #{camelized_module_name}Web, :router
+
+      pipeline :browser do
+        plug :accepts, ["html"]
+        plug :fetch_session
+        plug :fetch_live_flash
+        plug :put_root_layout, {#{camelized_module_name}Web.LayoutView, :root}
+        plug :protect_from_forgery
+        plug :put_secure_browser_headers
+        plug CounterPlug
+      end
+
+      pipeline :api do
+        plug :accepts, ["json"]
+      end
+
+      scope "/", TestWeb do
+        pipe_through :browser
+
+        #{routes}
+      end
     end
     """
   end

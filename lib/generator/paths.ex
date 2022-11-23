@@ -105,6 +105,13 @@ defmodule Generator.Paths do
     |> Path.join("page/#{page_module}.html.heex")
   end
 
+  @spec application_file_path(String.t()) :: String.t()
+  def application_file_path(module) do
+    module
+    |> application_path()
+    |> Path.join("lib/#{module}/application.ex")
+  end
+
   # * Reporter paths
 
   @spec counter_folder_path(String.t()) :: String.t()
