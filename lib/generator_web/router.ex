@@ -25,7 +25,6 @@ defmodule GeneratorWeb.Router do
     pipe_through :api
 
     post "/subscriptions", SubscriptionController, :create
-    post "/report-visits", VisitReportController, :create
   end
 
   scope "/admin", GeneratorWeb do

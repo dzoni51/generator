@@ -31,7 +31,6 @@ defmodule Generator.Sites.Site do
     field :module, :string
     field :domain, :string
     field :region, :string
-    field :visits, :string
     field :deployed_at, :utc_datetime
 
     has_many :pages, Generator.Pages.Page
@@ -43,11 +42,6 @@ defmodule Generator.Sites.Site do
     |> cast(attrs, [:name, :css, :domain, :region, :user_id])
     |> validate_required([:name, :domain, :region, :user_id])
     |> maybe_update_module()
-  end
-
-  def update_visits(site, attrs) do
-    site
-    |> cast(attrs, [:visits])
   end
 
   def deploy(site) do

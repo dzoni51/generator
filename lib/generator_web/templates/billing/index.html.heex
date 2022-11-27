@@ -1,121 +1,184 @@
-
 <div class="px-4 sm:px-6 lg:px-8">
   <div class="w-1/4">
-  <div class="mt-4">
-    <h3 class="text-lg font-medium leading-6 text-gray-900">Billing Information</h3>
-    <p class="mt-1 max-w-2xl text-sm text-gray-500">Billing & plan details.</p>
+    <div class="mt-4">
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Billing Information</h3>
+      <p class="mt-1 max-w-2xl text-sm text-gray-500">Billing & plan details.</p>
+    </div>
+    <div class="mt-5 border-t border-gray-200">
+      <dl class="sm:divide-y sm:divide-gray-200">
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Current plan</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= if is_nil(@plan) do %>
+              None
+            <% else %>
+              <%= @plan.name %>
+            <% end %>
+          </dd>
+        </div>
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Next billing date</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= if is_nil(@current_user.next_billing_date) do %>
+              -
+            <% else %>
+              <%= @current_user.next_billing_date %>
+            <% end %>
+          </dd>
+        </div>
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Next bill amount</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= if is_nil(@current_user.next_billing_period_amount) do %>
+              -
+            <% else %>
+              <%= @current_user.next_billing_period_amount %>
+            <% end %>
+          </dd>
+        </div>
+      </dl>
+    </div>
   </div>
-  <div class="mt-5 border-t border-gray-200">
-    <dl class="sm:divide-y sm:divide-gray-200">
-      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-        <dt class="text-sm font-medium text-gray-500">Current plan</dt>
-        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          <%= if is_nil(@plan) do %>
-            None
-          <% else %>
-           <%= @plan.name %>
-          <% end %>
-        </dd>
-      </div>
-      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-        <dt class="text-sm font-medium text-gray-500">Next billing date</dt>
-        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          <%= if is_nil(@current_user.next_billing_date) do %>
-            -
-          <% else %>
-           <%= @current_user.next_billing_date %>
-          <% end %>
-        </dd>
-      </div>
-      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-        <dt class="text-sm font-medium text-gray-500">Next bill amount</dt>
-        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-          <%= if is_nil(@current_user.next_billing_period_amount) do %>
-            -
-          <% else %>
-           <%= @current_user.next_billing_period_amount %>
-          <% end %>
-        </dd>
-      </div>
-    </dl>
-  </div>
-</div>
 
-<div class="relative">
-  <div class="absolute inset-0 flex items-center" aria-hidden="true">
-    <div class="w-full border-t border-gray-300"></div>
-  </div>
-  <div class="relative flex items-center justify-between">
-    <span class="bg-white pr-3 text-lg font-medium text-gray-900">Cards</span>
+  <div class="relative">
+    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+      <div class="w-full border-t border-gray-300"></div>
+    </div>
+    <div class="relative flex items-center justify-between">
+      <span class="bg-white pr-3 text-lg font-medium text-gray-900">Cards</span>
 
-    <%= link to: Routes.billing_path(@conn, :new), class: "inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-1.5 text-sm font-medium leading-5 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" do %>
-    <!-- Heroicon name: mini/plus -->
-      <svg class="-ml-1.5 mr-1 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-      </svg>
-      <span>Add new card</span>
-    <% end %>
+      <%= link to: Routes.billing_path(@conn, :new), class: "inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-1.5 text-sm font-medium leading-5 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" do %>
+        <svg
+          class="-ml-1.5 mr-1 h-5 w-5 text-gray-400"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+        </svg>
+        <span>Add new card</span>
+      <% end %>
+    </div>
   </div>
-</div>
 
-    <%= if Enum.empty?(@credit_cards) do %>
+  <%= if Enum.empty?(@credit_cards) do %>
     <p>
-      You currently do not have any cards. <%= link "Add one now?", to: Routes.billing_path(@conn, :new), class: "text-blue-700 underline" %>
+      You currently do not have any cards. <%= link("Add one now?",
+        to: Routes.billing_path(@conn, :new),
+        class: "text-blue-700 underline"
+      ) %>
     </p>
-    <% else %>
+  <% else %>
     <div class="mt-4 mb-4 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
           <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-              <tr class="divide-x divide-gray-200">
-                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Card type</th>
-                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Last 4</th>
-                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Expiration year</th>
-                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Expiration month</th>
-                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Default</th>
-                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Added on</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-              <%= for card <- @credit_cards do %>
-              <tr class="divide-x divide-gray-200">
-                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6"><%= card.card_type %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= card.last_4 %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= card.expiration_year %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= card.expiration_month %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500">
-                  <%= if card.default do %>
-                    <svg class="h-5 w-5 flex-shrink-0 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                    </svg>
-                  <% end %>
-                </td>
-                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6"><%= card.added_on %></td>
-                <td>
-                  <div class="flex justify-end">
-                    <%= unless card.default do %>
-                      <%= form_for @conn, Routes.billing_path(@conn, :make_default, card), fn _f -> %>
-                        <%= submit "Make default", class: "inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
+              <thead class="bg-gray-50">
+                <tr class="divide-x divide-gray-200">
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Card type
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Last 4
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Expiration year
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Expiration month
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Default
+                  </th>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Added on
+                  </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <%= for card <- @credit_cards do %>
+                  <tr class="divide-x divide-gray-200">
+                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                      <%= card.card_type %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      <%= card.last_4 %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      <%= card.expiration_year %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      <%= card.expiration_month %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      <%= if card.default do %>
+                        <svg
+                          class="h-5 w-5 flex-shrink-0 text-green-500"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
                       <% end %>
-                    <% end %>
+                    </td>
+                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
+                      <%= card.added_on %>
+                    </td>
+                    <td>
+                      <div class="flex justify-end">
+                        <%= unless card.default do %>
+                          <%= form_for @conn, Routes.billing_path(@conn, :make_default, card), fn _f -> %>
+                            <%= submit("Make default",
+                              class:
+                                "inline-flex items-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            ) %>
+                          <% end %>
+                        <% end %>
 
-                    <%= form_for @conn, Routes.billing_path(@conn, :delete, card), [method: :delete, data: [confirm: "Are you sure you want to delete this card?"]], fn _f -> %>
-                      <%= submit "Delete", class: "inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" %>
-                    <% end %>
-                  </div>
-                </td>
-              </tr>
-              <% end %>
+                        <%= form_for @conn, Routes.billing_path(@conn, :delete, card), [method: :delete, data: [confirm: "Are you sure you want to delete this card?"]], fn _f -> %>
+                          <%= submit("Delete",
+                            class:
+                              "inline-flex items-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                          ) %>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-    <% end %>
+  <% end %>
 
   <div class="relative">
     <div class="absolute inset-0 flex items-center" aria-hidden="true">
@@ -126,37 +189,68 @@
     </div>
   </div>
 
-    <%= if Enum.empty?(@transactions) do %>
-    <p>You do not currently have any transactions information. Any information about transactions will appear here.
+  <%= if Enum.empty?(@transactions) do %>
+    <p>
+      You do not currently have any transactions information. Any information about transactions will appear here.
     </p>
-    <% else %>
+  <% else %>
     <div class="mt-4 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
           <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-              <tr class="divide-x divide-gray-200">
-                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Kind</th>
-                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Amount</th>
-                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Payment method</th>
-                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Timestamp</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-              <%= for transaction <- @transactions do %>
-              <tr class="divide-x divide-gray-200">
-                <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6"><%= transaction.kind %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= transaction.amount %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500">*<%= Generator.Cards.get_card_last_4_by_token(transaction.charged_with_payment_method_token) %></td>
-                <td class="whitespace-nowrap p-4 text-sm text-gray-500"><%= Utils.format_timestamp(transaction.timestamp) %></td>
-              </tr>
-              <% end %>
+              <thead class="bg-gray-50">
+                <tr class="divide-x divide-gray-200">
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Kind
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Amount
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Payment method
+                  </th>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Timestamp
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <%= for transaction <- @transactions do %>
+                  <tr class="divide-x divide-gray-200">
+                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                      <%= transaction.kind %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      <%= transaction.amount %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      *<%= Generator.Cards.get_card_last_4_by_token(
+                        transaction.charged_with_payment_method_token
+                      ) %>
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                      <%= Utils.format_timestamp(transaction.timestamp) %>
+                    </td>
+                  </tr>
+                <% end %>
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-    <% end %>
+  <% end %>
 </div>

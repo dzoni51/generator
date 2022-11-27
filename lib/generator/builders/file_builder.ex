@@ -192,7 +192,6 @@ defmodule Generator.Builders.FileBuilder do
           {:plug_cowboy, "~> 2.5"},
           {:tailwind, "~> 0.1", runtime: Mix.env() == :dev} ,
           {:nebulex, "~> 2.4"},
-          {:quantum, "~> 3.0"},
           {:httpoison, "~> 1.8"}
         ]
       end
@@ -226,7 +225,7 @@ defmodule Generator.Builders.FileBuilder do
     """
   end
 
-  # * Reported
+  # * Reporter
   @spec cache_file(module_string()) :: String.t()
   def cache_file(module) do
     """
@@ -273,33 +272,33 @@ defmodule Generator.Builders.FileBuilder do
     """
   end
 
-  @spec reporter_file(Ecto.UUID.t()) :: String.t()
-  def reporter_file(site_id) do
-    """
-    defmodule Reporter do
-      def report_visits() do
-        Process.sleep(Enum.random(1..120000))
-        with {:ok, %HTTPoison.Response{status_code: 200}} <-
-               HTTPoison.post(
-                 "https://5da3-2a06-5b03-a0ff-fa00-00-3.ngrok.io/webhooks/report-visits",
-                 Jason.encode!(%{site_id: "#{site_id}", visits: Cache.get(:visits)}),
-                 [{"Content-Type", "application/json"}]
-               ) do
-          Cache.put(:visits, 0)
-        end
-      end
-    end
-    """
-  end
+  # @spec reporter_file(Ecto.UUID.t()) :: String.t()
+  # def reporter_file(site_id) do
+  #   """
+  #   defmodule Reporter do
+  #     def report_visits() do
+  #       Process.sleep(Enum.random(1..120000))
+  #       with {:ok, %HTTPoison.Response{status_code: 200}} <-
+  #              HTTPoison.post(
+  #                "https://5da3-2a06-5b03-a0ff-fa00-00-3.ngrok.io/webhooks/report-visits",
+  #                Jason.encode!(%{site_id: "#{site_id}", visits: Cache.get(:visits)}),
+  #                [{"Content-Type", "application/json"}]
+  #              ) do
+  #         Cache.put(:visits, 0)
+  #       end
+  #     end
+  #   end
+  #   """
+  # end
 
-  @spec scheduler_file(module_string()) :: String.t()
-  def scheduler_file(module) do
-    """
-    defmodule Scheduler do
-      use Quantum, otp_app: :#{module}
-    end
-    """
-  end
+  # @spec scheduler_file(module_string()) :: String.t()
+  # def scheduler_file(module) do
+  #   """
+  #   defmodule Scheduler do
+  #     use Quantum, otp_app: :#{module}
+  #   end
+  #   """
+  # end
 
   @spec application_file(module_string()) :: String.t()
   def application_file(module) do
@@ -321,8 +320,7 @@ defmodule Generator.Builders.FileBuilder do
           {Phoenix.PubSub, name: #{camelized_module_name}.PubSub},
           # Start the Endpoint (http/https)
           #{camelized_module_name}Web.Endpoint,
-          {Cache, []},
-          Scheduler
+          {Cache, []}
         ]
 
         opts = [strategy: :one_for_one, name: #{camelized_module_name}.Supervisor]

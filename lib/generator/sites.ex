@@ -40,12 +40,6 @@ defmodule Generator.Sites do
     Site.changeset(site, attrs)
   end
 
-  def update_visits(%Site{} = site, new_visits) do
-    site
-    |> Site.update_visits(%{"visits" => new_visits})
-    |> Repo.update()
-  end
-
   def build_site(site_id) do
     with %Site{module: module, pages: pages} = site <- get_site!(site_id) do
       app_path = Paths.application_path(module)

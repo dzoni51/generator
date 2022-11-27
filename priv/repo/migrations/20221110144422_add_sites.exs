@@ -9,7 +9,6 @@ defmodule Generator.Repo.Migrations.AddSites do
       add :css, :text
       add :domain, :string
       add :region, :string
-      add :visits, :string
       add :deployed_at, :utc_datetime
       add :user_id, references(:users, type: :uuid)
     end
