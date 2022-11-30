@@ -1,0 +1,29 @@
+defmodule CounterPlug do
+  import Plug.Conn
+
+  def init(opts), do: opts
+
+  def call(conn, _opts) do
+    case get_session(conn, :uuid) do
+      nil ->
+        log_visit()
+
+        conn
+        |> put_unique_user_id()
+
+      _uuid ->
+        conn
+    end
+  end
+
+  defp put_unique_user_id(conn) do
+    token = :crypto.strong_rand_bytes(32)
+
+    conn
+    |> put_session(:uuid, token)
+  end
+
+  defp log_visit() do
+    Cache.incr(:visits, 1)
+  end
+end

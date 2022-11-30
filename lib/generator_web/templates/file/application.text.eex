@@ -1,0 +1,30 @@
+defmodule <%= @camelized_module_name %>.Application do
+
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      # Start the Ecto repository
+      <%= @camelized_module_name %>.Repo,
+      # Start the Telemetry supervisor
+      <%= @camelized_module_name %>Web.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: <%= @camelized_module_name %>.PubSub},
+      # Start the Endpoint (http/https)
+      <%= @camelized_module_name %>Web.Endpoint,
+      {Cache, []}
+    ]
+
+    opts = [strategy: :one_for_one, name: <%= @camelized_module_name %>.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  @impl true
+  def config_change(changed, _new, removed) do
+    <%= @camelized_module_name %>Web.Endpoint.config_change(changed, removed)
+    :ok
+  end
+end

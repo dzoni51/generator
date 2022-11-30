@@ -1,0 +1,5 @@
+defmodule <%= @camelized_module_name %>Web.PageController do
+    use <%= @camelized_module_name %>Web, :controller
+
+    <%= @functions %>
+end
