@@ -6,7 +6,7 @@ defmodule Generator.Accounts do
   import Ecto.Query, warn: false
   alias Generator.Repo
 
-  alias Generator.Accounts.{User, UserToken, UserNotifier}
+  alias Generator.Accounts.{User, UserToken, UserNotifier, Moderator}
 
   ## Database getters
 
@@ -26,6 +26,10 @@ defmodule Generator.Accounts do
     Repo.get_by(User, email: email)
   end
 
+  def get_moderator_by_email(email) when is_binary(email) do
+    Repo.get_by(Moderator, email: email)
+  end
+
   @doc """
   Gets a user by email and password.
 
@@ -42,6 +46,12 @@ defmodule Generator.Accounts do
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
     if User.valid_password?(user, password), do: user
+  end
+
+  def get_moderator_by_email_and_password(email, password)
+      when is_binary(email) and is_binary(password) do
+    moderator = Repo.get_by(Moderator, email: email)
+    if Moderator.valid_password?(moderator, password), do: moderator
   end
 
   @doc """
@@ -65,6 +75,8 @@ defmodule Generator.Accounts do
     |> Repo.preload(preload_opts)
   end
 
+  def get_moderator!(id), do: Repo.get!(Moderator, id)
+
   ## User registration
 
   @doc """
@@ -85,6 +97,12 @@ defmodule Generator.Accounts do
     |> Repo.insert()
   end
 
+  def register_moderator(attrs) do
+    %Moderator{}
+    |> Moderator.registration_changeset(attrs)
+    |> Repo.insert()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.
 
@@ -96,6 +114,10 @@ defmodule Generator.Accounts do
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false)
+  end
+
+  def change_moderator_registration(%Moderator{} = moderator, attrs \\ %{}) do
+    Moderator.registration_changeset(moderator, attrs, hash_password: false)
   end
 
   ## Settings
@@ -111,6 +133,10 @@ defmodule Generator.Accounts do
   """
   def change_user_email(user, attrs \\ %{}) do
     User.email_changeset(user, attrs)
+  end
+
+  def change_moderator_email(moderator, attrs \\ %{}) do
+    Moderator.email_changeset(moderator, attrs)
   end
 
   @doc """
@@ -133,6 +159,13 @@ defmodule Generator.Accounts do
     |> Ecto.Changeset.apply_action(:update)
   end
 
+  def apply_moderator_email(moderator, password, attrs) do
+    moderator
+    |> Moderator.email_changeset(attrs)
+    |> Moderator.validate_current_password(password)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
   @doc """
   Updates the user email using the given token.
 
@@ -150,6 +183,8 @@ defmodule Generator.Accounts do
       _ -> :error
     end
   end
+
+  # TODO: def update_moderator_email(moderator, )
 
   defp user_email_multi(user, email, context) do
     changeset =
@@ -192,6 +227,10 @@ defmodule Generator.Accounts do
     User.password_changeset(user, attrs, hash_password: false)
   end
 
+  def change_moderator_password(moderator, attrs \\ %{}) do
+    Moderator.password_changeset(moderator, attrs, hash_password: false)
+  end
+
   @doc """
   Updates the user password.
 
@@ -220,6 +259,18 @@ defmodule Generator.Accounts do
     end
   end
 
+  def update_moderator_password(moderator, password, attrs) do
+    moderator
+    |> Moderator.password_changeset(attrs)
+    |> Moderator.validate_current_password(password)
+    |> Repo.update()
+  end
+
+  def get_user_moderators(user_id) do
+    query = from m in Moderator, where: m.user_id == ^user_id
+    Repo.all(query)
+  end
+
   ## Session
 
   @doc """
@@ -245,6 +296,10 @@ defmodule Generator.Accounts do
   def delete_session_token(token) do
     Repo.delete_all(UserToken.token_and_context_query(token, "session"))
     :ok
+  end
+
+  def delete_moderator(%Moderator{} = mod) do
+    Repo.delete(mod)
   end
 
   ## Confirmation

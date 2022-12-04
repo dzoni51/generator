@@ -94,6 +94,11 @@ defmodule GeneratorWeb.Router do
     post "/billing/add-card", BillingController, :create
     delete "/billing/delete-card/:id", BillingController, :delete
     post "/billing/make-default/:id", BillingController, :make_default
+
+    get "/moderators", ModeratorController, :index
+    get "/moderators/new", ModeratorController, :new
+    post "/moderators/create", ModeratorController, :create
+    delete "/moderators/delete/:id", ModeratorController, :delete
   end
 
   scope "/", GeneratorWeb do

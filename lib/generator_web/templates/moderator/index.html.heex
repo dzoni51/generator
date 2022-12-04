@@ -1,0 +1,16 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="mt-4">
+    <h3 class="text-lg font-medium leading-6 text-gray-900">Moderators</h3>
+    <p class="mt-1 max-w-2xl text-sm text-gray-500">Moderators....</p>
+  </div>
+
+  <%= if Enum.empty?(@moderators)  do %>
+    <p>
+      You currently do not have any moderators. <%= link("Add one now?",
+        to: Routes.moderator_path(@conn, :new),
+        class: "text-blue-700 underline"
+      ) %>
+    </p>
+  <% else %>
+  <% end %>
+</div>
