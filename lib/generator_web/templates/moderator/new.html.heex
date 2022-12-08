@@ -1,0 +1,74 @@
+<div class="py-6">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+    <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+  </div>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+    <!-- Replace with your content -->
+    <div class="py-4">
+      <div class="h-96">
+        <%= form_for @changeset, Routes.moderator_path(@conn, :create), fn f -> %>
+          <div>
+            <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div class="sm:col-span-4">
+                <%= label(f, :name, class: "block text-sm font-medium text-gray-700") %>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                  <%= text_input(f, :name,
+                    placeholder: "John... ",
+                    class:
+                      "block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  ) %>
+                </div>
+                <%= error_tag(f, :name) %>
+              </div>
+
+              <div class="sm:col-span-6">
+                <%= label(f, :email, class: "block text-sm font-medium text-gray-700") %>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                  <%= email_input(f, :email,
+                    placeholder: "Email used for signing in",
+                    class:
+                      "block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  ) %>
+                </div>
+                <%= error_tag(f, :email) %>
+              </div>
+
+              <div class="sm:col-span-6">
+                <%= label(f, :password, class: "block text-sm font-medium text-gray-700") %>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                  <%= password_input(f, :password,
+                    placeholder: "verystrongpassword123",
+                    class:
+                      "block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  ) %>
+                </div>
+                <%= error_tag(f, :password) %>
+              </div>
+            </div>
+            <div class="hidden sm:block" aria-hidden="true">
+              <div class="py-5">
+                <div class="border-t border-gray-200"></div>
+              </div>
+            </div>
+            <div class="pt-5">
+              <div class="flex justify-end">
+                <button
+                  type="submit"
+                  class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Create
+                </button>
+                <%= link("Cancel",
+                  to: Routes.moderator_path(@conn, :index),
+                  data: [confirm: "Are you sure you want to cancel creating moderator?"],
+                  class:
+                    "ml-3 rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                ) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="container mx-auto">
+  <div>
+    <div>
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Moderator Information</h3>
+      <p class="mt-1 max-w-2xl text-sm text-gray-500">Bla bla.</p>
+    </div>
+    <div class="mt-5 border-t border-gray-200">
+      <dl class="sm:divide-y sm:divide-gray-200">
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Name</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0"><%= @moderator.name %></dd>
+        </div>
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Email address</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= @moderator.email %>
+          </dd>
+        </div>
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Inserted at</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= Utils.format_timestamp(@moderator.inserted_at) %>
+          </dd>
+        </div>
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Updated at</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= Utils.format_timestamp(@moderator.updated_at) %>
+          </dd>
+        </div>
+        <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+          <dt class="text-sm font-medium text-gray-500">Site Permissions</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <%= if Enum.empty?(@sites) do %>
+              You currently do not have any sites, request one now?
+            <% else %>
+              <%= form_for @conn, Routes.moderator_path(@conn, :update, @moderator), [method: :put, as: :permissions], fn f -> %>
+                <ul role="list" class="divide-y divide-gray-200 rounded-md border border-gray-200">
+                  <%= for {name, id} <- @sites do %>
+                    <li class="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
+                      <div class="flex w-0 flex-1 items-center">
+                        <span class="ml-2 w-0 flex-1 truncate text-gray-600 font-bold">
+                          <%= name %>
+                        </span>
+                      </div>
+                      <div class="ml-4 flex-shrink-0">
+                        <%= checkbox(f, String.to_atom(id),
+                          checked: id in @site_permissions,
+                          class:
+                            "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        ) %>
+                      </div>
+                    </li>
+                  <% end %>
+                </ul>
+                <div class="hidden sm:block" aria-hidden="true">
+                  <div class="py-5">
+                    <div class="border-t border-gray-200"></div>
+                  </div>
+                </div>
+                <div class="mr-4 flex-shrink-0 flex flex-row-reverse">
+                  <%= submit("Save",
+                    class:
+                      " inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  ) %>
+                </div>
+              <% end %>
+            <% end %>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>

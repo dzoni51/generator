@@ -128,4 +128,14 @@ defmodule Utils do
       end
     end)
   end
+
+  def split(string, split_with, default_value \\ nil)
+  def split(nil, _, default_value), do: default_value
+  def split(_string, nil, default_value), do: default_value
+
+  def split(string, split_with, _) when is_binary(string) do
+    String.split(string, split_with, trim: true)
+  end
+
+  def split(_, _, default_value), do: default_value
 end

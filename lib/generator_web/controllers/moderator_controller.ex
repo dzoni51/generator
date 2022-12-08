@@ -3,6 +3,7 @@ defmodule GeneratorWeb.ModeratorController do
 
   alias Generator.Accounts.Moderator
   alias Generator.Accounts
+  alias Generator.Sites
 
   def index(conn, _params) do
     render(conn, "index.html",
@@ -23,6 +24,42 @@ defmodule GeneratorWeb.ModeratorController do
 
       {:error, cs} ->
         render(conn, "new.html", changeset: cs)
+    end
+  end
+
+  def show(conn, %{"id" => id}) do
+    with %Moderator{} = mod <- Accounts.get_user_moderator(id, conn.assigns.current_user.id) do
+      render(conn, "show.html",
+        moderator: mod,
+        sites: Sites.list_user_sites_id_and_name(conn.assigns.current_user.id),
+        site_permissions: Utils.split(mod.site_permissions, "\n", [])
+      )
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "That page does not exist.")
+        |> redirect(to: Routes.moderator_path(conn, :index))
+    end
+  end
+
+  def update(conn, %{"id" => id, "permissions" => permissions}) do
+    with %Moderator{} = mod <- Accounts.get_user_moderator(id, conn.assigns.current_user.id) do
+      case Accounts.set_moderator_permissions(mod, permissions) do
+        {:ok, mod} ->
+          conn
+          |> put_flash(:info, "Permissions updated successfully.")
+          |> redirect(to: Routes.moderator_path(conn, :show, mod))
+
+        {:error, _cs} ->
+          conn
+          |> put_flash(:error, "Oops, an error occured, please try again.")
+          |> redirect(to: Routes.moderator_path(conn, :show, mod))
+      end
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "That page does not exist.")
+        |> redirect(to: Routes.moderator_path(conn, :index))
     end
   end
 

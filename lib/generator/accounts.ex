@@ -7,6 +7,7 @@ defmodule Generator.Accounts do
   alias Generator.Repo
 
   alias Generator.Accounts.{User, UserToken, UserNotifier, Moderator}
+  alias Generator.Sites.Site
 
   ## Database getters
 
@@ -28,6 +29,12 @@ defmodule Generator.Accounts do
 
   def get_moderator_by_email(email) when is_binary(email) do
     Repo.get_by(Moderator, email: email)
+  end
+
+  def get_user_moderator(id, user_id) do
+    query = from m in Moderator, where: m.id == ^id and m.user_id == ^user_id
+
+    Repo.one(query)
   end
 
   @doc """
@@ -52,6 +59,36 @@ defmodule Generator.Accounts do
       when is_binary(email) and is_binary(password) do
     moderator = Repo.get_by(Moderator, email: email)
     if Moderator.valid_password?(moderator, password), do: moderator
+  end
+
+  def auth_user_or_moderator_for_site(email, password, site_id) do
+    with %User{id: user_id} = user <- get_user_by_email_and_password(email, password),
+         true <- Repo.exists?(from s in Site, where: s.user_id == ^user_id and s.id == ^site_id) do
+      user
+    else
+      nil ->
+        # Check for moderator
+        with %Moderator{} = mod <- get_moderator_by_email_and_password(email, password),
+             true <- validate_moderator_permission(mod, site_id) do
+          mod
+        else
+          false ->
+            {:error, :no_permission_to_access_entity}
+
+          _ ->
+            nil
+        end
+
+      false ->
+        {:error, :no_permission_to_access_entity}
+
+      _ ->
+        nil
+    end
+  end
+
+  defp validate_moderator_permission(%Moderator{site_permissions: permissions}, site_id) do
+    site_id in Utils.split(permissions, "\n", [])
   end
 
   @doc """
@@ -229,6 +266,12 @@ defmodule Generator.Accounts do
 
   def change_moderator_password(moderator, attrs \\ %{}) do
     Moderator.password_changeset(moderator, attrs, hash_password: false)
+  end
+
+  def update_site_permissions(moderator, attrs) do
+    moderator
+    |> Moderator.change_site_persmissions(attrs)
+    |> Repo.update()
   end
 
   @doc """
@@ -484,5 +527,21 @@ defmodule Generator.Accounts do
     user
     |> User.next_billing_info_changeset(attrs)
     |> Repo.update()
+  end
+
+  def set_moderator_permissions(moderator, params) do
+    moderator
+    |> Moderator.change_site_persmissions(%{"site_permissions" => format_site_permissions(params)})
+    |> Repo.update()
+  end
+
+  defp format_site_permissions(params) do
+    Enum.reduce(params, "", fn {k, v}, acc ->
+      if v == "true" do
+        k <> "\n" <> acc
+      else
+        acc
+      end
+    end)
   end
 end

@@ -7,6 +7,7 @@ defmodule Generator.Repo.Migrations.AddModerators do
       add :name, :string, null: false
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
+      add :site_permissions, :string
       add :user_id, references(:users, type: :uuid, on_delete: :delete_all)
       timestamps()
     end

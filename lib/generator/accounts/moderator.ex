@@ -7,6 +7,7 @@ defmodule Generator.Accounts.Moderator do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :name, :string
+    field :site_permissions, :string
     timestamps()
 
     belongs_to :user, Generator.Accounts.User
@@ -14,7 +15,8 @@ defmodule Generator.Accounts.Moderator do
 
   def registration_changeset(moderator, attrs, opts \\ []) do
     moderator
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :name, :user_id])
+    |> validate_required([:name, :user_id])
     |> validate_email()
     |> validate_password(opts)
   end
@@ -70,7 +72,7 @@ defmodule Generator.Accounts.Moderator do
     |> validate_password(opts)
   end
 
-  def valid_password?(%Generator.Accounts.User{hashed_password: hashed_password}, password)
+  def valid_password?(%Generator.Accounts.Moderator{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end
@@ -86,5 +88,10 @@ defmodule Generator.Accounts.Moderator do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def change_site_persmissions(changeset, attrs) do
+    changeset
+    |> cast(attrs, [:site_permissions])
   end
 end

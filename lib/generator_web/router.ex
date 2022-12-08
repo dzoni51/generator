@@ -25,6 +25,7 @@ defmodule GeneratorWeb.Router do
     pipe_through :api
 
     post "/subscriptions", SubscriptionController, :create
+    post "/authenticate", SiteAuthenticationController, :create
   end
 
   scope "/admin", GeneratorWeb do
@@ -98,6 +99,8 @@ defmodule GeneratorWeb.Router do
     get "/moderators", ModeratorController, :index
     get "/moderators/new", ModeratorController, :new
     post "/moderators/create", ModeratorController, :create
+    get "/moderators/:id", ModeratorController, :show
+    put "/moderators/:id/update", ModeratorController, :update
     delete "/moderators/delete/:id", ModeratorController, :delete
   end
 

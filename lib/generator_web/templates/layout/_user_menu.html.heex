@@ -11,7 +11,7 @@
       </div>
       <div class="mt-5 flex flex-grow flex-col">
         <nav class="flex-1 space-y-1 px-2 pb-4">
-          <%= link to: Routes.dashboard_path(@conn, :index), class: "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md" do %>
+          <%= link to: Routes.dashboard_path(@conn, :index), class: LinkHelper.active_link(@conn, "dashboard", "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md") do %>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -29,7 +29,7 @@
             Dashboard
           <% end %>
 
-          <%= link to: Routes.user_settings_path(@conn, :edit), class: "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md" do %>
+          <%= link to: Routes.user_settings_path(@conn, :edit), class: LinkHelper.active_link(@conn, "settings", "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md") do %>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -52,7 +52,7 @@
             Account Settings
           <% end %>
 
-          <%= link to: Routes.billing_path(@conn, :index), class: "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md" do %>
+          <%= link to: Routes.billing_path(@conn, :index), class: LinkHelper.active_link(@conn, "billing", "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md") do %>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -75,7 +75,7 @@
             Billing
           <% end %>
 
-          <%= link to: Routes.thread_path(@conn, :index), class: "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md" do %>
+          <%= link to: Routes.thread_path(@conn, :index), class: LinkHelper.active_link(@conn, "threads", "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md") do %>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -93,7 +93,7 @@
             Support/Messages
           <% end %>
 
-          <%= link to: Routes.moderator_path(@conn, :index), class: "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md" do %>
+          <%= link to: Routes.moderator_path(@conn, :index), class: LinkHelper.active_link(@conn, "moderators", "text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md") do %>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
