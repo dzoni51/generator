@@ -11,6 +11,18 @@ defmodule Generator.Sites do
   alias Generator.Builders.Reporter
   alias Generator.Pages.Page
 
+  # * Request aliases
+  alias Generator.Sites.Request
+
+  # * Requests
+  def insert_request(attrs) do
+    attrs
+    |> Request.new()
+    |> Repo.insert()
+  end
+
+  # * Sites
+
   def list_sites do
     Repo.all(Site)
   end
