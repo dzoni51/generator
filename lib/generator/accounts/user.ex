@@ -18,7 +18,7 @@ defmodule Generator.Accounts.User do
     has_many :sites, Generator.Sites.Site
     has_many :cards, Generator.Cards.Card
     has_many :transactions, Generator.Transactions.Transaction
-    has_many :site_requests, Generator.Sites.Requests
+    # has_many :site_requests, Generator.Sites.Requests
     belongs_to :plan, Generator.Plans.Plan
     timestamps()
   end
